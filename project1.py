@@ -4,15 +4,18 @@
 # Nicolette Vere
 
 #!/usr/bin/python
+#!/usr/bin/python
 class node:
     def __init__(self, name, heuristic):
         self.name = name
         self.heuristic = heuristic
         self.children = []
 
-    def add_child(self, childNode, distance):
+    def add_child(self,childNode,distance):
         self.children.append(childNode)
         self.distance = distance
+        childNode.children.append(self)
+        childNode.distance = distance
 
 f = open("graph.txt")
 files = f.read(1)
@@ -70,38 +73,71 @@ for j in newList:
 y.close()
 g= open("graph.txt")
 number = 0
+x=0
 while number < 20:
 
 	realNode = g.read(1)
+	
 	
 	if realNode == '#':
 		number = 21
 		break
 	g.read(1)
 	friend = g.read(1)
+	
 	for i in nodeList:
 		if friend == i.name:
 			nodeFriend = i
-	g.read(1)
-	dist = g.read(4)
-	
+
+	g.read(1)		
+	dist = g.readline()
+	while x < 5:	
+		for h in nodeList:
+			if h.name == '':
+				nodeList.remove(h)
+			if h.name == '\n':
+				nodeList.remove(h)
+			if h.name == '#':
+				nodeList.remove(h)
+		x = x+1
 	for i in nodeList:
 		if i.name == realNode:
 			i.add_child(nodeFriend,dist)
-	number = number+1
-x=0	
-while x < 5:	
-	for h in nodeList:
-		if h.name == '':
-			nodeList.remove(h)
-		if h.name == '\n':
-			nodeList.remove(h)
-	x = x+1
-for x in nodeList:
+
+
 	
-	for a in x.children:
-		print(x.name,a.name,x.distance)
+	number = number+1
+
+
+
+
 	
 #########	Nicolette does 2,5,8
+#Breath First Seach
+#start at S
+queue=[]
+unsortedQ=[]
+queue.append(nodeList[0])
+print("Breath First Search")
+print(queue[0].name)
+while queue[0].name != 'G':
+#look at first node in q's kiddos
+	for i in queue[0].children:
+		unsortedQ.append(i.distance)
 	
-	
+#sort them by distance
+	unsortedQ.sort()
+	queueSorted = []
+	for i in unsortedQ:
+		for j in queue[0].children:
+			if i == j.distance:
+				if j not in queueSorted:
+					queueSorted.append(j)
+#add them to queue
+	for i in queueSorted:
+		queue.append(i)
+	for i in queue:
+		print(i.name),
+#remove the first already check one from queue
+	del queue[0]
+	print("")
