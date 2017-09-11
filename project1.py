@@ -163,8 +163,10 @@ def General_Search(problem, search):
 		openNodes.insert(0,queue[0])
 		
 		
-		for i in queue[0].pathQ:
-			print(i.name),
+		for i in queue:
+			for j in i.pathQ:
+				print(j.name),
+			print(","),	
 		print("")
 		del queue[0]
 		if openNodes[0].pathQ[0].name == 'G':
