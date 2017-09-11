@@ -1,27 +1,48 @@
-# Project 1 Assignment for Intro to WPI
-# Jon Berry
-# Mathew Schwartzman
-# Nicolette Vere
-
-#!/usr/bin/python
 #!/usr/bin/python
 class node:
     def __init__(self, name, heuristic):
         self.name = name
         self.heuristic = heuristic
         self.children = []
+        
+
+	        
 
     def add_child(self,childNode,distance):
         self.children.append(childNode)
         self.distance = distance
         childNode.children.append(self)
         childNode.distance = distance
+class connection:
+	def __init__(self, node1, node2,value):
+		self.value = value
+		self.node1 = node1
+		self.node2 = node2
+		
+		
 
+
+class path:
+	def __init__(self, goalNode):
+		self.goalNode = goalNode
+		self.pathQ = []
+		
+		self.totalPath = 0
+		
+	def add_node(self, nodes):
+		self.pathQ.append(nodes)
+	def setTotal(self, totalPath):
+		self.totalPath = totalPath
+	def add_node2(self, nodes):
+		self.pathQ.insert(0,nodes)
+
+	
+	
 f = open("graph.txt")
 files = f.read(1)
 num = 0			
 nodeList = []			
-	
+conn1=[]	
 number = 0
 while files != '#':
 	files=f.read(1)
@@ -50,6 +71,7 @@ while number < 20:
 	friend = y.read(1)
 
 	y.read(1)
+	
 	dist = y.read(4)
 	
 	newList.append(realNode)
@@ -103,6 +125,11 @@ while number < 20:
 	for i in nodeList:
 		if i.name == realNode:
 			i.add_child(nodeFriend,dist)
+			newConnection = connection(i,nodeFriend,dist)
+			conn1.append(newConnection)
+
+
+			
 
 
 	
@@ -110,34 +137,112 @@ while number < 20:
 
 
 
+for i in nodeList:
+	i.distance = float(i.distance)
+	
+				
+	
+########	Nicolette does 2,5,8
+#General Search
+queue = []
+openNodes = []
+stopper = 1
+expanding = []
+def General_Search(problem, search):
+	queue = []
+	openNodes = []
+	stopper = 1
+	expanding = []
+	newPath = path('G')
+	newPath.add_node(problem[0])
+	queue.append(newPath)
+	print(search)
+	while stopper == 1:
+		if len(queue) == 0:
+			return "FAILURE"
+		openNodes.insert(0,queue[0])
+		
+		
+		for i in queue[0].pathQ:
+			print(i.name),
+		print("")
+		del queue[0]
+		if openNodes[0].pathQ[0].name == 'G':
+			stopper = 2
+			print("GOALLLLL")
+		expanding = []
+		for i in openNodes[0].pathQ[0].children:
+		#add to queue depending on search method
+			expanding.insert(0,i)
+			
+		
+		if search == "breath-first":
+		
+				
+			first = openNodes[0].pathQ[0].name
+			for x in expanding:
+				second = x.name
+				for a in conn1:
+					if a.node1.name ==first and a.node2.name == second:
+						x.distance = a.value
+						
+					elif a.node1.name==second and a.node2.name==first:
+						x.distance = a.value
+						
+			expanding = sorted(expanding, key = lambda x: x.distance, reverse=False)
+			for g in expanding:
+				newPath = path('G')
+				for r in openNodes[0].pathQ:
+					
+					newPath.add_node2(r)
+				if r.name != g.name:	
+					newPath.add_node2(g)
+					queue.append(newPath)
+					
+		if search == "uniform-cost":
+		
+				
+			first = openNodes[0].pathQ[0].name
+			for x in expanding:
+				second = x.name
+				for a in conn1:
+					if a.node1.name ==first and a.node2.name == second:
+						x.distance = a.value
+						
+					elif a.node1.name==second and a.node2.name==first:
+						x.distance = a.value
+						
+			
+			for g in expanding:
+				newPath = path('G')
+				for r in openNodes[0].pathQ:
+					
+					newPath.add_node2(r)
+					newPath.totalPath = newPath.totalPath + float(r.distance)
+				if r.name != g.name:	
+					newPath.add_node2(g)
+					queue.append(newPath)
+					newPath.totalPath = newPath.totalPath + float(g.distance)
 
-	
-#########	Nicolette does 2,5,8
-#Breath First Seach
-#start at S
-queue=[]
-unsortedQ=[]
-queue.append(nodeList[0])
-print("Breath First Search")
-print(queue[0].name)
-while queue[0].name != 'G':
-#look at first node in q's kiddos
-	for i in queue[0].children:
-		unsortedQ.append(i.distance)
-	
-#sort them by distance
-	unsortedQ.sort()
-	queueSorted = []
-	for i in unsortedQ:
-		for j in queue[0].children:
-			if i == j.distance:
-				if j not in queueSorted:
-					queueSorted.append(j)
-#add them to queue
-	for i in queueSorted:
-		queue.append(i)
-	for i in queue:
-		print(i.name),
-#remove the first already check one from queue
-	del queue[0]
-	print("")
+			queue = sorted(queue, key = lambda x: x.totalPath, reverse=False)
+			
+			
+		if search == "beam":
+											
+			expanding = sorted(expanding, key = lambda x: float(x.heuristic), reverse=False)
+		
+			while len(expanding) > 2:
+				del expanding[len(expanding)-1]
+				
+			for g in expanding:
+				newPath = path('G')
+				for r in openNodes[0].pathQ:
+					
+					newPath.add_node2(r)
+				if r.name != g.name:	
+					newPath.add_node2(g)
+					queue.append(newPath)
+									
+General_Search(nodeList, "breath-first")			
+General_Search(nodeList, "uniform-cost")
+General_Search(nodeList, "beam")
