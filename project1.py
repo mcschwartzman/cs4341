@@ -1,3 +1,6 @@
+#Nicolette Vere
+#Mathew Schwartzman
+#Jonathan Berry
 #!/usr/bin/python
 class node:
     def __init__(self, name, heuristic,alphabetValue):
@@ -186,13 +189,17 @@ def General_Search(problem, search):
 		
 		for i in queue:
 			for j in i.pathQ:
+				
 				print(j.name),
-			print(","),	
+			
+			print(","),
+			
 		print("")
+		
 		del queue[0]
 		if openNodes[0].pathQ[0].name == 'G':
 			stopper = 2
-			print("GOALLLLL")
+			print("GOAL")
 		expanding = []
 		for i in openNodes[0].pathQ[0].children:
 		#add to queue depending on search method
@@ -239,18 +246,22 @@ def General_Search(problem, search):
 						x.distance = a.value
 						
 			
-			for g in expanding:
+			
 				newPath = path('G')
+				
 				for r in openNodes[0].pathQ:
 					
-					newPath.add_node2(r)
+					newPath.add_node(r)
 					newPath.totalPath = newPath.totalPath + float(r.distance)
-				if r.name != g.name:	
-					newPath.add_node2(g)
-					queue.append(newPath)
-					newPath.totalPath = newPath.totalPath + float(g.distance)
+					
 
-			queue = sorted(queue, key = lambda x: x.totalPath, reverse=False)
+				if r.name != x.name:	
+					newPath.add_node2(x)
+					queue.append(newPath)
+				newPath.totalPath = newPath.totalPath + float(x.distance)
+				
+					
+			queue = sorted(queue, key = lambda x: float(x.totalPath), reverse=False)
 			
 			
 		if search == "beam":
