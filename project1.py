@@ -1,11 +1,12 @@
 #!/usr/bin/python
 class node:
-    def __init__(self, name, heuristic):
+    def __init__(self, name, heuristic,alphabetValue):
         self.name = name
         self.heuristic = heuristic
         self.children = []
+        self.alphabetValue = alphabetValue
         
-
+			
 	        
 
     def add_child(self,childNode,distance):
@@ -53,7 +54,7 @@ while num < 10:
 	files = f.read(1)
 	files=f.readline()
 	nodeH = files
-	newNode = node(nodeName,nodeH)
+	newNode = node(nodeName,nodeH , 0)
 	nodeList.append(newNode)
 	num = num+1
 f.close()
@@ -90,7 +91,7 @@ for k in nodeList:
 			newList.remove(h)
 
 for j in newList:
-	newNode = node(j,0)
+	newNode = node(j,0,0)
 	nodeList.append(newNode)
 y.close()
 g= open("graph.txt")
@@ -140,8 +141,27 @@ while number < 20:
 for i in nodeList:
 	i.distance = float(i.distance)
 	
-				
-	
+for i in nodeList:
+	if i.name == 'A':
+		i.alphabetValue = 1	
+	elif i.name == 'C':
+		i.alphabetValue = 3			
+	elif i.name == 'D':
+		i.alphabetValue = 4	
+	elif i.name == 'E':
+		i.alphabetValue = 5	
+	elif i.name == 'F':
+		i.alphabetValue = 6	
+	elif i.name == 'G':
+		i.alphabetValue = 7
+	elif i.name == 'H':
+		i.alphabetValue = 8	
+	elif i.name == 'I':
+		i.alphabetValue = 9	
+	elif i.name == 'J':
+		i.alphabetValue = 10
+	elif i.name == 'S':
+		i.alphabetValue = 11		
 ########	Nicolette does 2,5,8
 #General Search
 queue = []
@@ -161,7 +181,8 @@ def General_Search(problem, search):
 		if len(queue) == 0:
 			return "FAILURE"
 		openNodes.insert(0,queue[0])
-		
+	
+
 		
 		for i in queue:
 			for j in i.pathQ:
@@ -181,25 +202,28 @@ def General_Search(problem, search):
 		if search == "breath-first":
 		
 				
-			first = openNodes[0].pathQ[0].name
-			for x in expanding:
-				second = x.name
-				for a in conn1:
-					if a.node1.name ==first and a.node2.name == second:
-						x.distance = a.value
+			#first = openNodes[0].pathQ[0].name
+			#for x in expanding:
+				#second = x.name
+				#for a in conn1:
+					#if a.node1.name ==first and a.node2.name == second:
+						#x.distance = a.value
+						#print(first,second, x.distance)
+					#elif a.node1.name==second and a.node2.name==first:
+						#x.distance = a.value
+						#print(first,second, x.distance)
+			
 						
-					elif a.node1.name==second and a.node2.name==first:
-						x.distance = a.value
-						
-			expanding = sorted(expanding, key = lambda x: x.distance, reverse=False)
+			expanding = sorted(expanding, key = lambda x: x.alphabetValue, reverse=False)
 			for g in expanding:
 				newPath = path('G')
 				for r in openNodes[0].pathQ:
 					
-					newPath.add_node2(r)
-				if r.name != g.name:	
-					newPath.add_node2(g)
-					queue.append(newPath)
+					newPath.add_node(r)
+				for i in newPath.pathQ:
+					if g not in newPath.pathQ:	
+						newPath.add_node2(g)
+						queue.append(newPath)
 					
 		if search == "uniform-cost":
 		
@@ -230,20 +254,56 @@ def General_Search(problem, search):
 			
 			
 		if search == "beam":
-											
-			expanding = sorted(expanding, key = lambda x: float(x.heuristic), reverse=False)
-		
-			while len(expanding) > 2:
-				del expanding[len(expanding)-1]
+			placeHolder = []
+			expanding = sorted(expanding, key = lambda x: x.heuristic, reverse=False)
+			
+			
+			if len(expanding)-1 > 1:
 				
-			for g in expanding:
+				placeHolder.append(expanding[0])
+				placeHolder.append(expanding[1])
+				placeHolder.append(expanding[2])
+				placeHolder = sorted(placeHolder, key = lambda x: x.heuristic, reverse=False)
+
+				if placeHolder[0].alphabetValue>placeHolder[1].alphabetValue:
+					#print(placeHolder[0].name,placeHolder[1].name,placeHolder[2].name)
+					del placeHolder[1]
+					
+					
+					
+					
+				else:
+					placeHolder = sorted(placeHolder, key = lambda x: x.heuristic, reverse=False)
+					
+					placeHolder2 =[]
+					placeHolder2.append(placeHolder[2])
+					placeHolder = placeHolder2
+					
+					
+					
+					#print(placeHolder[1].name)
+			else:
+				
+				placeHolder = expanding
+				#print(placeHolder[0].name)
+				
+
+			for g in placeHolder:
+		
+				
 				newPath = path('G')
 				for r in openNodes[0].pathQ:
 					
-					newPath.add_node2(r)
-				if r.name != g.name:	
-					newPath.add_node2(g)
-					queue.append(newPath)
+					newPath.add_node(r)
+				for i in newPath.pathQ:
+					if g not in newPath.pathQ:	
+						newPath.add_node2(g)
+						queue.append(newPath)
+			if len(queue) >2:
+				if len(queue[0].pathQ)>2:
+					if float(queue[2].pathQ[0].heuristic)>=float(queue[1].pathQ[0].heuristic):
+						del queue[2]
+			
 									
 General_Search(nodeList, "breath-first")			
 General_Search(nodeList, "uniform-cost")
