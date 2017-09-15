@@ -7,6 +7,7 @@ class node:
         self.name = name
         self.heuristic = heuristic
         self.children = []
+        
         self.alphabetValue = alphabetValue
         
 			
@@ -57,7 +58,8 @@ while num < 10:
 	files = f.read(1)
 	files=f.readline()
 	nodeH = files
-	newNode = node(nodeName,nodeH , 0)
+	
+	newNode = node(nodeName,nodeH,0)
 	nodeList.append(newNode)
 	num = num+1
 f.close()
@@ -189,7 +191,7 @@ def General_Search(problem, search):
 			return "FAILURE"
 		
 		openNodes.insert(0,queue[0])
-	
+		
 
 		
 		for i in queue:
@@ -234,6 +236,7 @@ def General_Search(problem, search):
 					
 					newPath.add_node(r)
 				for i in newPath.pathQ:
+
 					if g not in newPath.pathQ:	
 						newPath.add_node2(g)
 						queue.append(newPath)
@@ -387,10 +390,73 @@ def General_Search(problem, search):
 						if len(newPath.pathQ) < deepness:
 							queue.insert(0,newPath)
 			
-															
+		if search == "greedy":
+			expanding = sorted(expanding, key = lambda x: x.heuristic, reverse=False)
+		
+			for g in expanding:
+				newPath = path('G')
+				for r in openNodes[0].pathQ:
+					
+					newPath.add_node(r)
+
+				for i in newPath.pathQ:
+					if g not in newPath.pathQ:	
+						newPath.add_node2(g)
+						
+						
+
+						queue.insert(0,newPath)
+			#queue = sorted(queue, key = lambda x: x.pathQ[0].heuristic, reverse=False)
+
+			#queue = sorted(queue, key = lambda x: len(x.pathQ), reverse=False)
+			#queue = sorted(queue, key = lambda x: x.pathQ[0].heuristic, reverse=False)
+
+
+		if search == "a-star":
+
+			first = openNodes[0].pathQ[0].name
+			for x in expanding:
+				second = x.name
+				for a in conn1:
+					if a.node1.name ==first and a.node2.name == second:
+						w = float(a.value) + float(x.heuristic)
+						#print(float(a.value) , float(x.heuristic), "1")
+						x.distance = str(w)
+					elif a.node1.name==second and a.node2.name==first:
+						w = float(a.value) + float(x.heuristic)
+						#print(float(a.value) , float(x.heuristic))
+
+						x.distance = str(w)
+				
+			expanding = sorted(expanding, key = lambda x: float(x.distance), reverse=True)
+			#for i in expanding:
+				#print(i.name,i.distance)
+			for g in expanding:
+				newPath = path('G')
+				for r in openNodes[0].pathQ:
+					
+					newPath.add_node(r)
+
+				for i in newPath.pathQ:
+					if g not in newPath.pathQ:	
+						newPath.add_node2(g)
+						
+						
+						#queue = sorted(queue, key = lambda x: float(x.pathQ[0].distance), reverse=False)
+
+						#queue.insert(0,newPath)							
+						queue = sorted(queue, key = lambda x: float(x.pathQ[0].distance), reverse=True)
+						if len(queue) > 2:
+							del queue[0]
+						queue = sorted(queue, key = lambda x: float(x.pathQ[0].distance), reverse=False)
+						queue.insert(0,newPath)	
+
+																					
 General_Search(nodeList, "breath-first")			
 General_Search(nodeList, "uniform-cost")
 General_Search(nodeList, "beam")
 General_Search(nodeList, "depth-first")
 General_Search(nodeList, "depth-limited")
 General_Search(nodeList, "iterative-deepening")
+General_Search(nodeList, "greedy")
+General_Search(nodeList, "a-star")
