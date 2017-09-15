@@ -143,6 +143,8 @@ while number < 20:
 
 for i in nodeList:
 	i.distance = float(i.distance)
+	global deepness
+	deepness = 0
 	
 for i in nodeList:
 	if i.name == 'A':
@@ -171,10 +173,12 @@ queue = []
 openNodes = []
 stopper = 1
 expanding = []
+
 def General_Search(problem, search):
 	queue = []
 	openNodes = []
 	stopper = 1
+	
 	expanding = []
 	newPath = path('G')
 	newPath.add_node(problem[0])
@@ -183,6 +187,7 @@ def General_Search(problem, search):
 	while stopper == 1:
 		if len(queue) == 0:
 			return "FAILURE"
+		
 		openNodes.insert(0,queue[0])
 	
 
@@ -195,6 +200,7 @@ def General_Search(problem, search):
 			print(","),
 			
 		print("")
+		
 		
 		del queue[0]
 		if openNodes[0].pathQ[0].name == 'G':
@@ -231,7 +237,32 @@ def General_Search(problem, search):
 					if g not in newPath.pathQ:	
 						newPath.add_node2(g)
 						queue.append(newPath)
+		if search == "depth-first":
+		
+				
+			#first = openNodes[0].pathQ[0].name
+			#for x in expanding:
+				#second = x.name
+				#for a in conn1:
+					#if a.node1.name ==first and a.node2.name == second:
+						#x.distance = a.value
+						#print(first,second, x.distance)
+					#elif a.node1.name==second and a.node2.name==first:
+						#x.distance = a.value
+						#print(first,second, x.distance)
+			
+						
+			expanding = sorted(expanding, key = lambda x: x.alphabetValue, reverse=True)
+			for g in expanding:
+				newPath = path('G')
+				for r in openNodes[0].pathQ:
 					
+					newPath.add_node(r)
+				for i in newPath.pathQ:
+					if g not in newPath.pathQ:	
+						newPath.add_node2(g)
+						queue.insert(0,newPath)
+											
 		if search == "uniform-cost":
 		
 				
@@ -315,7 +346,51 @@ def General_Search(problem, search):
 					if float(queue[2].pathQ[0].heuristic)>=float(queue[1].pathQ[0].heuristic):
 						del queue[2]
 			
-									
+		if search == "depth-limited":
+		
+				
+			#first = openNodes[0].pathQ[0].name
+			#for x in expanding:
+				#second = x.name
+				#for a in conn1:
+					#if a.node1.name ==first and a.node2.name == second:
+						#x.distance = a.value
+						#print(first,second, x.distance)
+					#elif a.node1.name==second and a.node2.name==first:
+						#x.distance = a.value
+						#print(first,second, x.distance)
+			
+						
+			expanding = sorted(expanding, key = lambda x: x.alphabetValue, reverse=True)
+			for g in expanding:
+				newPath = path('G')
+				for r in openNodes[0].pathQ:
+					
+					newPath.add_node(r)
+				for i in newPath.pathQ:
+					if g not in newPath.pathQ:	
+						newPath.add_node2(g)
+						if len(newPath.pathQ) < 4:
+							queue.insert(0,newPath)
+						
+		if search == "iterative-deepening":
+			global deepness
+			expanding = sorted(expanding, key = lambda x: x.alphabetValue, reverse=True)
+			for g in expanding:
+				newPath = path('G')
+				for r in openNodes[0].pathQ:
+					
+					newPath.add_node(r)
+				for i in newPath.pathQ:
+					if g not in newPath.pathQ:	
+						newPath.add_node2(g)
+						if len(newPath.pathQ) < deepness:
+							queue.insert(0,newPath)
+			
+															
 General_Search(nodeList, "breath-first")			
 General_Search(nodeList, "uniform-cost")
 General_Search(nodeList, "beam")
+General_Search(nodeList, "depth-first")
+General_Search(nodeList, "depth-limited")
+General_Search(nodeList, "iterative-deepening")
