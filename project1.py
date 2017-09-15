@@ -146,7 +146,7 @@ while number < 20:
 for i in nodeList:
 	i.distance = float(i.distance)
 	global deepness
-	deepness = 0
+	deepness = 3
 	
 for i in nodeList:
 	if i.name == 'A':
@@ -175,6 +175,22 @@ queue = []
 openNodes = []
 stopper = 1
 expanding = []
+
+def IDS():
+	global deepness
+	expanding = sorted(expanding, key = lambda x: x.alphabetValue, reverse=True)
+	for g in expanding:
+		newPath = path('G')
+		for r in openNodes[0].pathQ:
+			
+			newPath.add_node(r)
+		for i in newPath.pathQ:
+			if g not in newPath.pathQ:	
+				newPath.add_node2(g)
+				if len(newPath.pathQ) < deepness:
+					queue.insert(0,newPath)
+					deepness = deepness + 1
+
 
 def General_Search(problem, search):
 	queue = []
@@ -215,7 +231,6 @@ def General_Search(problem, search):
 			
 		
 		if search == "breath-first":
-		
 				
 			#first = openNodes[0].pathQ[0].name
 			#for x in expanding:
@@ -258,10 +273,10 @@ def General_Search(problem, search):
 			expanding = sorted(expanding, key = lambda x: x.alphabetValue, reverse=True)
 			for g in expanding:
 				newPath = path('G')
-				for r in openNodes[0].pathQ:
+				for r in openNodes[0].pathQ:	# for first seen in open nodes
 					
-					newPath.add_node(r)
-				for i in newPath.pathQ:
+					newPath.add_node(r)	# add path to visited nodes
+				for i in newPath.pathQ:	#
 					if g not in newPath.pathQ:	
 						newPath.add_node2(g)
 						queue.insert(0,newPath)
@@ -389,6 +404,7 @@ def General_Search(problem, search):
 						newPath.add_node2(g)
 						if len(newPath.pathQ) < deepness:
 							queue.insert(0,newPath)
+							deepness = deepness + 1
 			
 		if search == "greedy":
 			expanding = sorted(expanding, key = lambda x: x.heuristic, reverse=False)
