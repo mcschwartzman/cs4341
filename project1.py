@@ -405,6 +405,7 @@ def General_Search(problem, search):
 						if len(newPath.pathQ) < deepness:
 							queue.insert(0,newPath)
 							deepness = deepness + 1
+							
 			
 		if search == "greedy":
 			expanding = sorted(expanding, key = lambda x: x.heuristic, reverse=False)
