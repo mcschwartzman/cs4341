@@ -8,15 +8,20 @@ import numpy as np
 
 
 class GamePiece:
-    def __init__(self,value,row, column):
-        self.value = value    # an int
-        self.children = []    # a list of nodes
+    def __init__(self,value,row, column, types):
+        self.value = value
+        self.types= types    # an int
+        self.full = []
+        self.empty = []     # a list of nodes
         self.row = row
         self.column  = column
 
-    def addChild(self, childNode):
-		self.children.append(childNode)	
-		
+    def addFull(self, childNode):
+		self.full.append(childNode)	
+
+    def addEmpty(self, childNode):
+		self.empty.append(childNode)	
+				
 #class for pieces in a row/column/diagonal#
 class ConnectedPieces:
     def __init__(self, starterNode):
@@ -91,13 +96,14 @@ GameBoard = np.zeros([15,15], dtype = object)
 
 
 ###Boolean Function to check if My Turn###
+f = open("move_file.txt")
 def isMyTurn():
 
   fileExistsBool = os.path.isfile('./file.txt')
 
   if (fileExistsBool):
 
-	f = open("move_file.txt")
+
 	
 	i=f.read(1)
 	
@@ -117,13 +123,70 @@ def isMyTurn():
 	f.read(1)
 	column = f.read(1)
 	
-	GameBoard[int(row)][int(column)] = GamePiece(0,row,column)
+	GameBoard[int(row)][int(column)] = GamePiece(0,row,column,"O")
+	#row
+	if GameBoard[int(row)+1][int(column)] != 0:
+		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)])
+		
+	if GameBoard[int(row)+1][int(column)] == 0:
+		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)])
+		
+	if GameBoard[int(row)-1][int(column)] != 0:
+		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)])
+		
+	if GameBoard[int(row)-1][int(column)] == 0:
+		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)])
+	#column	
+	if GameBoard[int(row)][int(column)+1] != 0:
+		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)][int(column)+1])
+			
+		
+	if GameBoard[int(row)][int(column)+1] == 0:
+		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)][int(column)+1])
+		
+	if GameBoard[int(row)][int(column)-1] != 0:
+		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)][int(column)-1])
+		
+	if GameBoard[int(row)][int(column)-1] == 0:
+		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)][int(column)-1])
+	#diagonal	
+	if GameBoard[int(row)+1][int(column)+1] != 0:
+		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)+1])
+		
+	if GameBoard[int(row)+1][int(column)+1] == 0:
+		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)+1])
+		
+	if GameBoard[int(row)+1][int(column)-1] != 0:
+		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)-1])
+		
+	if GameBoard[int(row)+1][int(column)-1] == 0:
+		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)-1])
+		
+	if GameBoard[int(row)-1][int(column)+1] != 0:
+		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)+1])
+		
+	if GameBoard[int(row)-1][int(column)+1] == 0:
+		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)+1])
+		
+	if GameBoard[int(row)-1][int(column)-1] != 0:
+		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)-1])
+		
+	if GameBoard[int(row)-1][int(column)-1] == 0:
+		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)-1])
+	f.readline(1)
+	f.readline(1)
+	#print("EMPTY")
+	#for i in GameBoard[int(row)][int(column)].empty:
+		#print(i)
+			
+	#print("FULL")
+	#for i in GameBoard[int(row)][int(column)].full:
+		#print(i)
+			
 
 				
-	
- 
 isMyTurn()
-print(GameBoard)
+		
 
 #class for pieces#					
 #function that assigns a heuristic value to pieces#
