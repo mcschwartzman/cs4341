@@ -1,27 +1,9 @@
 #Created 14 September 2017
 
 import os
+import numpy as np
 
 
-###Boolean Function to check if My Turn###
-def isMyTurn():
-
-  fileExistsBool = os.path.isfile('./file.txt')
-
-  if (fileExistsBool):  # if groupname.txt exists
-    print "my turn" # it is my turn
-  else:
-    print "not my turn" # it is not my turn
-
-  print fileExistsBool
-  return fileExistsBool
-
-
-isMyTurn()
-
-
-
-#class for pieces#
 
 
 
@@ -102,265 +84,50 @@ class YDiagonal:
 		self.YDiagonal.append(connected)
 		
 #game board 15x15 array#
-def makeGame():
-	w,h = 15,15
-	GameBoard = [[0 for x in range(w)] for y in range(h)]	
-					
+
+
+
+GameBoard = np.zeros([15,15], dtype = object)
+
+
+###Boolean Function to check if My Turn###
+def isMyTurn():
+
+  fileExistsBool = os.path.isfile('./file.txt')
+
+  if (fileExistsBool):
+
+	f = open("move_file.txt")
+	
+	i=f.read(1)
+	
+	while i != " ":
+	
+		i=f.read(1)
+	row = f.read(1)
+	if row == "A":
+		row = 1
+	if row == "B":
+		row = 2
+	if row == "C":
+		row = 3
+	if row == "D":
+		row = 4
+		
+	f.read(1)
+	column = f.read(1)
+	
+	GameBoard[int(row)][int(column)] = GamePiece(0,row,column)
+
+				
+	
+ 
+isMyTurn()
+print(GameBoard)
+
+#class for pieces#					
 #function that assigns a heuristic value to pieces#
 
-def assignHeuristic(strategy, gamepiece):
-	
-	if strategy == "offense":
-		for i in YRow:
-			if i[0].column - 1 == gamepiece.column:
-				if i[0].row == gamepiece.row:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)
-			elif i[len(i)].column == gamepiece.column:
-				if i[0].row == gamepiece.row:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)					
-			
-		
-		for i in YColumn:
-			if i[0].row - 1 == gamepiece.row:
-				if i[0].column == gamepiece.column:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)
-			elif i[len(i)].row == gamepiece.row:
-				if i[0].column == gamepiece.column:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)				
-			
-		for i in YDiagonal:
-			if i[0].row - 1 == gamepiece.row:
-				if i[0].column-1 == gamepiece.column:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)
-			elif i[len(i)].row == gamepiece.row:
-				if i[len(i)].column == gamepiece.column:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)	
-										
-	elif strategy == "defense":
-		for i in ORow:
-			if i[0].column - 1 == gamepiece.column:
-				if i[0].row == gamepiece.row:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)
-			elif i[len(i)].column == gamepiece.column:
-				if i[0].row == gamepiece.row:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)	
-								
-		for i in OColumn:
-			if i[0].row - 1 == gamepiece.row:
-				if i[0].column == gamepiece.column:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)
-			elif i[len(i)].row == gamepiece.row:
-				if i[0].column == gamepiece.column:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)	
-										
-		for i in ODiagonal:		
-			if i[0].row - 1 == gamepiece.row:
-				if i[0].column-1 == gamepiece.column:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)
-			elif i[len(i)].row == gamepiece.row:
-				if i[len(i)].column == gamepiece.column:
-					if GameBoard[gamepiece.row][gamepiece.column] == 0:
-						gamepiece.value = gamepiece.value + len(i)	
-
-#need to determine if playing offense or defense
-def determineStrategy():
-	
-	ORow = sorted(ORow, key = lambda x: len(x), reverse=True)
-	YRow = sorted(YRow, key = lambda x: len(x), reverse=True)
-	OColumn = sorted(OColumn, key = lambda x: len(x), reverse=True)
-	YColumn = sorted(YColumn, key = lambda x: len(x), reverse=True)
-	ODiagonal = sorted(ODiagonal, key = lambda x: len(x), reverse=True)
-	YDiagonal = sorted(YDiagonal, key = lambda x: len(x), reverse=True)
-	OScore = []
-	OScore.append(ORow[0])
-	OScore.append(OColumn[0])
-	OScore.append(ODiagonal[0])
-	OScore = sorted(OScore, key = lambda x: x, reverse=True)
-
-
-	YScore = []
-	YScore.append(YRow[0])
-	YScore.append(YColumn[0])
-	YScore.append(YDiagonal[0])
-	YScore = sorted(YScore, key = lambda x: x, reverse=True)
-
-	if OScore[0]> YScore[0]:
-		return "Defense"
-	elif OScore[0] < YScore[0]:
-		return "Offense"
-	elif OScore[0] == YScore[0]:
-		return "Offense"
-		
-#make a list of all the empty nodes touching desired teams pieces	
-def getEmptyList():
-	strategy = determineStrategy()
-	emptyNodes = []
-	if strategy == "Offense":
-		for i in ORow:
-			for j in i:
-				if Gameboard[i.row+1][i.column]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column])
-					
-				elif Gameboard[i.row-1][i.column] ==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column]) 
-					
-				elif Gameboard[i.row][i.column+1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column+1])
-					
-				elif Gameboard[i.row][i.column-1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column-1])
-					
-				elif Gameboard[i.row+1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column+1])
-					
-				elif Gameboard[i.row-1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column-1])
-					
-				elif Gameboard[i.row-1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column+1])
-					
-				elif Gameboard[i.row+1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column-1])
-
-		for i in OColumn:
-			for j in i:
-				if Gameboard[i.row+1][i.column]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column])
-					
-				elif Gameboard[i.row-1][i.column] ==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column]) 
-					
-				elif Gameboard[i.row][i.column+1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column+1])
-					
-				elif Gameboard[i.row][i.column-1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column-1])
-					
-				elif Gameboard[i.row+1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column+1])
-					
-				elif Gameboard[i.row-1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column-1])
-					
-				elif Gameboard[i.row-1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column+1])
-					
-				elif Gameboard[i.row+1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column-1])
-		for i in ODiagonal:
-			for j in i:
-				if Gameboard[i.row+1][i.column]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column])
-					
-				elif Gameboard[i.row-1][i.column] ==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column]) 
-					
-				elif Gameboard[i.row][i.column+1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column+1])
-					
-				elif Gameboard[i.row][i.column-1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column-1])
-					
-				elif Gameboard[i.row+1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column+1])
-					
-				elif Gameboard[i.row-1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column-1])
-					
-				elif Gameboard[i.row-1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column+1])
-					
-				elif Gameboard[i.row+1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column-1])
-	if strategy == "Defense":
-		for i in YRow:
-			for j in i:
-				if Gameboard[i.row+1][i.column]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column])
-					
-				elif Gameboard[i.row-1][i.column] ==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column]) 
-					
-				elif Gameboard[i.row][i.column+1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column+1])
-					
-				elif Gameboard[i.row][i.column-1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column-1])
-					
-				elif Gameboard[i.row+1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column+1])
-					
-				elif Gameboard[i.row-1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column-1])
-					
-				elif Gameboard[i.row-1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column+1])
-					
-				elif Gameboard[i.row+1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column-1])
-
-		for i in YColumn:
-			for j in i:
-				if Gameboard[i.row+1][i.column]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column])
-					
-				elif Gameboard[i.row-1][i.column] ==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column]) 
-					
-				elif Gameboard[i.row][i.column+1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column+1])
-					
-				elif Gameboard[i.row][i.column-1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column-1])
-					
-				elif Gameboard[i.row+1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column+1])
-					
-				elif Gameboard[i.row-1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column-1])
-					
-				elif Gameboard[i.row-1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column+1])
-					
-				elif Gameboard[i.row+1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column-1])
-		for i in YDiagonal:
-			for j in i:
-				if Gameboard[i.row+1][i.column]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column])
-					
-				elif Gameboard[i.row-1][i.column] ==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column]) 
-					
-				elif Gameboard[i.row][i.column+1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column+1])
-					
-				elif Gameboard[i.row][i.column-1] ==0:
-					emptyNodes.append(Gameboard[i.row][i.column-1])
-					
-				elif Gameboard[i.row+1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column+1])
-					
-				elif Gameboard[i.row-1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column-1])
-					
-				elif Gameboard[i.row-1][i.column+1]==0:
-					emptyNodes.append(Gameboard[i.row-1][i.column+1])
-					
-				elif Gameboard[i.row+1][i.column-1]==0:
-					emptyNodes.append(Gameboard[i.row+1][i.column-1])	
-def minimax():	
 	#use iterative deepening search to do give each one a heuristic
 	#use assignHeuristic
 	#do mini max using those heuristics
