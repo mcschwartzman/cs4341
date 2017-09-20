@@ -82,7 +82,7 @@ def isMyTurn():
 	opponentMoves.append(GameBoard[int(row)][int(column)])
 	#print("EMPTY")
 	#for i in GameBoard[int(row)][int(column)].empty:
-		#print(i)
+		#print(i.row,i.column)
 			
 	#print("FULL")
 	#for i in GameBoard[int(row)][int(column)].full:
@@ -159,36 +159,68 @@ def newPiece(row,column,types):
 		GameBoard[int(row)-1][int(column)-1] = GamePiece(0,row-1,int(column)-1,types)
 		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)-1])			
 
+
+#need to do iterative deepening search for each of the empty nodes
+#iterate like 6 times
 global deepness
-deepness = 0
 global emptyNodes
 global placeHolder
+placeHolder = []
+emptyNodes = []
+deepness = 0
 def IDS():
-	global deepness
+	
 	global emptyNodes
+	global deepness
 	global placeHolder
+	
 	if deepness == 0:
 		newPath = path("G")
 		newPath.add_node(opponentMoves[0])
-		emptyNodes = []
 		emptyNodes.append(newPath)
-		placeHolder = []
-	for i in emptyNodes:
+	else:
+		for i in emptyNodes:
+			#print(i)
+			for k in i.pathQ[0].empty:
+				#print(k.row, k.column)		
+			
+				
+				newPath = path("G")
+			
+				for l in i.pathQ:
+					newPath.add_node(l)
+				if deepness% 2 == 0:
+					newPiece(k.row,k.column,"Y")
+				else:
+					newPiece(k.row,k.column,"O")
+
+				if k.row >= 0 and k.column>=0:
+					newPath.add_node2(GameBoard[int(k.row)][int(k.column)])
+					placeHolder.append(newPath)
+	
 		
-		for j in i.pathQ[0].empty:
-			newPath = path("G")
-			for u in i.pathQ:
-				newPath.add_node(u)
-			newPath.add_node2(j)
-			newPiece(j.row,j.column,"F")
-			placeHolder.append(newPath)
+		emptyNodes = placeHolder	
+		for i in placeHolder:
+			#print(i)
+		
+			for y in i.pathQ:
+				print(y.row,y.column),
+			print("\n")
+		print(deepness)
 	deepness = deepness +1	
 	if deepness < 6:
 		IDS()
 	else:
 		print("END")
+		#assignHeuristics()
 		
-
+#def assignHeuristics():
+	#for i in emptyNodes:
+		#for h in i.pathQ:
+			#print(h.row, h.column),
+		#print("\n")
+		
+		
 					
 #need to do iterative deepening search for each of the empty nodes
 #iterate like 6 times
