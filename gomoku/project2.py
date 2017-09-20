@@ -177,154 +177,212 @@ def IDS():
 	if deepness == 0:
 		newPath = path("G")
 		newPath.add_node(opponentMoves[0])
+		#print(opponentMoves[0].row,opponentMoves[0].column)
 		emptyNodes.append(newPath)
 	else:
 		for i in emptyNodes:
 			#print(i)
 			for k in i.pathQ[0].empty:
-				#print(k.row, k.column)		
+				#print(k.row, k.column),
 			
 				
 				newPath = path("G")
 			
 				for l in i.pathQ:
+					#print(l.row,l.column),
 					newPath.add_node(l)
-				
+
+				print("\n")
 				newPiece(k.row,k.column,"F")
 				
 				if k.row >= 0 and k.column>=0:
 					newPath.add_node2(GameBoard[int(k.row)][int(k.column)])
-
 					placeHolder.append(newPath)
 	
 		
 		emptyNodes = placeHolder	
-		#for i in placeHolder:
+		#for i in emptyNodes:
 			##print(i)
 		
 			#for y in i.pathQ:
+				##print(deepness)
 				#print(y.row,y.column),
 			#print("\n")
-		#print(deepness)
+			#print(deepness)
 	deepness = deepness +1	
-	if deepness < 5:
+	if deepness < 10:
 		IDS()
 	else:
 		print("END")
 		addHeuristics()
 
 #then assign heuristic to botton postion
-def addHeuristics():
-	yourList = []
-	opponentList = []
-	for i in emptyNodes:
-		value = 0
-		for g in i.pathQ:
-			if value == 0:
-				g.lists = "O"
+#def addHeuristics():
+	#yourList = []
+	#opponentList = []
+	#for i in emptyNodes:
+		#value = 0
+		#for g in i.pathQ:
+			#if value == 0:
+				#g.lists = "O"
 				
-				value = 1
-			else:
-				g.lists = "Y"
+				#value = 1
+			#else:
+				#g.lists = "Y"
 		
-				value = 0
-	for i in emptyNodes:
-		newListYRow = []
-		newListYColumn = []
-		newListORow = []
-		newListOColumn = []
+				#value = 0
+	#for i in emptyNodes:
+		#newListYRow = []
+		#newListYColumn = []
+		#newListORow = []
+		#newListOColumn = []
 
-		for g in i.pathQ:
+		#for g in i.pathQ:
 
-			if g.lists == "Y":
-				newListYRow.append(g.row)
-				newListYColumn.append(g.column)
+			#if g.lists == "Y":
+				#newListYRow.append(g.row)
+				#newListYColumn.append(g.column)
 
-			else:
-				newListORow.append(g.row)
-				newListOColumn.append(g.column)
-			RYCount = collections.Counter(newListYRow)			
-			CYCount = collections.Counter(newListYColumn)
-			ROCount = collections.Counter(newListORow)			
-			COCount = collections.Counter(newListOColumn)		
-			total = 0
-			for x in RYCount.values():
-				if x>1:
-					total = total +x
-					g.value = total
+			#else:
+				#newListORow.append(g.row)
+				#newListOColumn.append(g.column)
+			#RYCount = collections.Counter(newListYRow)			
+			#CYCount = collections.Counter(newListYColumn)
+			#ROCount = collections.Counter(newListORow)			
+			#COCount = collections.Counter(newListOColumn)		
+			#total = 0
+			#for x in RYCount.values():
+				#if x>1:
+					#total = total +x
+					#g.value = total
 
-			for x in CYCount.values():
-				if x>1:
-					total = g.value
-					total = total +x
-					g.value = total
+			#for x in CYCount.values():
+				#if x>1:
+					#total = g.value
+					#total = total +x
+					#g.value = total
 							
-			for x in ROCount.values():
-				if x>2:
-					total = total +x
-					g.value = total
+			#for x in ROCount.values():
+				#if x>2:
+					#total = total +x
+					#g.value = total
 
-			for x in COCount.values():
-				if x>2:
-					total = g.value
-					total = total +x
-					g.value = total
-					
+			#for x in COCount.values():
+				#if x>2:
+					#total = g.value
+					#total = total +x
+					#g.value = total
+def addHeuristics():
+	theList = []
+	rowList = []
+	for i in emptyNodes:
+		#print(deepness)
+		if deepness == 10:
+			theList.append(i)						
+	for r in theList:
+		newList = []
+		for g in r.pathQ:
+			
+			newList.append(g.row)
+			#print(g.row),
+			#print(g.column)
+		if (len(set(newList)) < len(newList)):
+			#print("TRUE")
+			for i in r.pathQ:
+				i.value = len(newList)-len(set(newList))
+				#print(i.row,i.column,i.value)
 
+		#print("\n")
+		if allSame(newList) ==True and len(newList) == 5:
+			#print(r.pathQ[0].row,r.pathQ[0].column)
+			r.pathQ[0].value = 100
+		else:
+			for i in r.pathQ:
+				i.value = 0			
+			#break
+		
+		
+	for r in theList:
+		newList = []
+		for g in r.pathQ:
+			
+			newList.append(g.column)
+			#print(g.row),
+			#print(g.column)
+		if (len(set(newList)) < len(newList)):
+			#print("TRUE")
+			for i in r.pathQ:
+				i.value = i.value + len(newList)-len(set(newList))
+				#print(i.row,i.column,i.value)
+
+		#print("\n")
+		if allSame(newList) ==True and len(newList) == 5:
+			#print(r.pathQ[0].row,r.pathQ[0].column)
+			r.pathQ[0].value = 100
+		else:
+			for i in r.pathQ:
+				i.value = i.value + 0			
+			#break	
+	
 global newList
 global nList	
 
-#then minimax back up to find next move
-def minimax():
-	global newList
-	global nList	
+def allSame(lists):
+	return all(x == lists[0] for x in lists)
 
-	newList = emptyNodes
-	maxReturn()
-	miniReturn()
-	actualMax()
-	miniReturn()
-	actualMax()
-def maxReturn():
-	global newList
-	global nList	
-	
 
-	#print(deepness)
-	
-	
-	newList = sorted(newList, key = lambda x: x.pathQ[0].value, reverse=True)
-	#print(newList[0].pathQ[0].value)
-	#print(GameBoard[int(newList[0].pathQ[0].row)][int(newList[0].pathQ[0].column)].full)
-	nList = []
-	for i in GameBoard[int(newList[0].pathQ[0].row)][int(newList[0].pathQ[0].column)].full:
-		nList.insert(0,i)
-def miniReturn():
-	global newList
-	global nList	
+##then minimax back up to find next move
+#def minimax():
+	#global newList
+	#global nList	
 
-	nList = sorted(nList, key = lambda x: x.value, reverse=False)
-	second = 0
-	for i in nList:
-		first = second
-		second = i.value
-		if second > first:
-			nList.remove(i)
-def actualMax():
-	global newList
-	global nList	
+	#newList = emptyNodes
+	#maxReturn()
+	#miniReturn()
 
-	newList = []
-	for f in nList:
-		#print(f.row,f.column)
-		for g in GameBoard[int(f.row)][int(f.column)].full:
-			newList.append(g)
+	#miniReturn()
+
 	
-	newList = sorted(newList, key = lambda x: x.value, reverse=True)
-	print(newList[0].row, newList[0].column,newList[0].value)
+#def maxReturn():
+	#global newList
+	#global nList	
+	##print(deepness)
+	
+	#newList = sorted(newList, key = lambda x: x.pathQ[0].value, reverse=True)
+	##print(newList[0].pathQ[0].value)
+	##print(GameBoard[int(newList[0].pathQ[0].row)][int(newList[0].pathQ[0].column)].full)
+	#nList = []
+	#for i in GameBoard[int(newList[0].pathQ[0].row)][int(newList[0].pathQ[0].column)].full:
+		#nList.insert(0,i)
+		
+#def miniReturn():
+	#global newList
+	#global nList	
+
+	#nList = sorted(nList, key = lambda x: x.value, reverse=False)
+	#second = 0
+	#for i in nList:
+		#first = second
+		#second = i.value
+		#if second > first:
+			#nList.remove(i)
+	#newList = []
+	#for f in nList:
+		##print(f.row,f.column)
+		#for g in GameBoard[int(f.row)][int(f.column)].full:
+			#newList.append(g)
+	
+	#newList = sorted(newList, key = lambda x: x.value, reverse=True)
+	#print(newList[0].row, newList[0].column,newList[0].value)
 			
 
-
+def minimax():
+	for i in emptyNodes:
+		for j in i.pathQ:
+			print("")
+			print(j.row, j.column, j.value),
+		print("\n")
+	
 		
 		
 #then print out that move and start again
