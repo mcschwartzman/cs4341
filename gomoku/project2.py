@@ -2,7 +2,7 @@
 
 import os
 import numpy as np
-
+import collections
 
 
 
@@ -212,6 +212,7 @@ def IDS():
 	else:
 		print("END")
 		addHeuristics()
+
 #then assign heuristic to botton postion
 def addHeuristics():
 	yourList = []
@@ -228,35 +229,109 @@ def addHeuristics():
 		
 				value = 0
 	for i in emptyNodes:
-		newListY = []
-		newListO = []
-		for g in i.pathQ:
-			if g.lists == "Y":
-				newListY.append(g)
-			else:
-				newListO.append(g)
-		
-		yourList.append(newListY)
-		opponentList.append(newListO)
-		
-	for i in yourList:
-		for g in i:
-			#here assign heuristics based off of how many in row/column
-			print(g.row,g.column,g.lists)
-		print("\n")
-		
-	for i in opponentList:
-		for g in i:
-			#here assign heuristics based off of how many in row/column
-			print(g.row,g.column,g.lists)
-		print("\n")					
+		newListYRow = []
+		newListYColumn = []
+		newListORow = []
+		newListOColumn = []
 
+		for g in i.pathQ:
+
+			if g.lists == "Y":
+				newListYRow.append(g.row)
+				newListYColumn.append(g.column)
+
+			else:
+				newListORow.append(g.row)
+				newListOColumn.append(g.column)
+			RYCount = collections.Counter(newListYRow)			
+			CYCount = collections.Counter(newListYColumn)
+			ROCount = collections.Counter(newListORow)			
+			COCount = collections.Counter(newListOColumn)		
+			total = 0
+			for x in RYCount.values():
+				if x>1:
+					total = total +x
+					g.value = total
+
+			for x in CYCount.values():
+				if x>1:
+					total = g.value
+					total = total +x
+					g.value = total
+							
+			for x in ROCount.values():
+				if x>2:
+					total = total +x
+					g.value = total
+
+			for x in COCount.values():
+				if x>2:
+					total = g.value
+					total = total +x
+					g.value = total
+					
+
+global newList
+global nList	
 
 #then minimax back up to find next move
+def minimax():
+	global newList
+	global nList	
+
+	newList = emptyNodes
+	maxReturn()
+	miniReturn()
+	actualMax()
+	miniReturn()
+	actualMax()
+def maxReturn():
+	global newList
+	global nList	
+	
+
+	#print(deepness)
+	
+	
+	newList = sorted(newList, key = lambda x: x.pathQ[0].value, reverse=True)
+	#print(newList[0].pathQ[0].value)
+	#print(GameBoard[int(newList[0].pathQ[0].row)][int(newList[0].pathQ[0].column)].full)
+	nList = []
+	for i in GameBoard[int(newList[0].pathQ[0].row)][int(newList[0].pathQ[0].column)].full:
+		nList.insert(0,i)
+def miniReturn():
+	global newList
+	global nList	
+
+	nList = sorted(nList, key = lambda x: x.value, reverse=False)
+	second = 0
+	for i in nList:
+		first = second
+		second = i.value
+		if second > first:
+			nList.remove(i)
+def actualMax():
+	global newList
+	global nList	
+
+	newList = []
+	for f in nList:
+		#print(f.row,f.column)
+		for g in GameBoard[int(f.row)][int(f.column)].full:
+			newList.append(g)
+	
+	newList = sorted(newList, key = lambda x: x.value, reverse=True)
+	print(newList[0].row, newList[0].column,newList[0].value)
+			
+
+
+		
+		
 #then print out that move and start again
 def main():
 	isMyTurn()
 	IDS()
+	minimax()
 	
 
 if __name__ == "__main__":
