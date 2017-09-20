@@ -213,65 +213,10 @@ def IDS():
 	if deepness < 10:
 		IDS()
 	else:
-		print("END")
+		#print("END")
 		addHeuristics()
 
-#then assign heuristic to botton postion
-#def addHeuristics():
-	#yourList = []
-	#opponentList = []
-	#for i in emptyNodes:
-		#value = 0
-		#for g in i.pathQ:
-			#if value == 0:
-				#g.lists = "O"
-				
-				#value = 1
-			#else:
-				#g.lists = "Y"
-		
-				#value = 0
-	#for i in emptyNodes:
-		#newListYRow = []
-		#newListYColumn = []
-		#newListORow = []
-		#newListOColumn = []
 
-		#for g in i.pathQ:
-
-			#if g.lists == "Y":
-				#newListYRow.append(g.row)
-				#newListYColumn.append(g.column)
-
-			#else:
-				#newListORow.append(g.row)
-				#newListOColumn.append(g.column)
-			#RYCount = collections.Counter(newListYRow)			
-			#CYCount = collections.Counter(newListYColumn)
-			#ROCount = collections.Counter(newListORow)			
-			#COCount = collections.Counter(newListOColumn)		
-			#total = 0
-			#for x in RYCount.values():
-				#if x>1:
-					#total = total +x
-					#g.value = total
-
-			#for x in CYCount.values():
-				#if x>1:
-					#total = g.value
-					#total = total +x
-					#g.value = total
-							
-			#for x in ROCount.values():
-				#if x>2:
-					#total = total +x
-					#g.value = total
-
-			#for x in COCount.values():
-				#if x>2:
-					#total = g.value
-					#total = total +x
-					#g.value = total
 def addHeuristics():
 	theList = []
 	rowList = []
@@ -289,16 +234,18 @@ def addHeuristics():
 		if (len(set(newList)) < len(newList)):
 			#print("TRUE")
 			for i in r.pathQ:
-				i.value = len(newList)-len(set(newList))
+				i.value = i.value + len(newList)-len(set(newList))
 				#print(i.row,i.column,i.value)
 
 		#print("\n")
 		if allSame(newList) ==True and len(newList) == 5:
+			
 			#print(r.pathQ[0].row,r.pathQ[0].column)
-			r.pathQ[0].value = 100
+			r.pathQ[0].value = 10000
+			
 		else:
 			for i in r.pathQ:
-				i.value = 0			
+				i.value = i.value + 0			
 			#break
 		
 		
@@ -318,7 +265,8 @@ def addHeuristics():
 		#print("\n")
 		if allSame(newList) ==True and len(newList) == 5:
 			#print(r.pathQ[0].row,r.pathQ[0].column)
-			r.pathQ[0].value = 100
+			r.pathQ[0].value = 10000
+			
 		else:
 			for i in r.pathQ:
 				i.value = i.value + 0			
@@ -330,60 +278,73 @@ global nList
 def allSame(lists):
 	return all(x == lists[0] for x in lists)
 
-
-##then minimax back up to find next move
-#def minimax():
-	#global newList
-	#global nList	
-
-	#newList = emptyNodes
-	#maxReturn()
-	#miniReturn()
-
-	#miniReturn()
-
-	
-#def maxReturn():
-	#global newList
-	#global nList	
-	##print(deepness)
-	
-	#newList = sorted(newList, key = lambda x: x.pathQ[0].value, reverse=True)
-	##print(newList[0].pathQ[0].value)
-	##print(GameBoard[int(newList[0].pathQ[0].row)][int(newList[0].pathQ[0].column)].full)
-	#nList = []
-	#for i in GameBoard[int(newList[0].pathQ[0].row)][int(newList[0].pathQ[0].column)].full:
-		#nList.insert(0,i)
-		
-#def miniReturn():
-	#global newList
-	#global nList	
-
-	#nList = sorted(nList, key = lambda x: x.value, reverse=False)
-	#second = 0
-	#for i in nList:
-		#first = second
-		#second = i.value
-		#if second > first:
-			#nList.remove(i)
-	#newList = []
-	#for f in nList:
-		##print(f.row,f.column)
-		#for g in GameBoard[int(f.row)][int(f.column)].full:
-			#newList.append(g)
-	
-	#newList = sorted(newList, key = lambda x: x.value, reverse=True)
-	#print(newList[0].row, newList[0].column,newList[0].value)
-			
-
+global currentNodes
+global bigList			
+global win
+win = 1
+global last
+last = ""
 def minimax():
+	global currentNodes
+	global bigList
+	global win
+	global last
+	currentNodes = []
 	for i in emptyNodes:
-		for j in i.pathQ:
-			print("")
-			print(j.row, j.column, j.value),
-		print("\n")
+		#print(i.pathQ[0].row, i.pathQ[0].column, i.pathQ[0].value)
+		currentNodes.append(i.pathQ[0])
+	end = 1
+	while end == 1:
+		if win != "ITS OVER":
+			findMax()
+			if win != "ITS OVER":
+				findMin()
+		elif win == "ITS OVER":
+			#print(last.row,last.column)
+			end = 2
+	#print("\n")
+def findMax():
+	global currentNodes
+	global bigList
+	global win
+	global last
+	print("MAX")
+	bigList = []
+
+	currentNodes = sorted(currentNodes, key = lambda x: x.value, reverse=True)
 	
-		
+	biggest = currentNodes[0]
+	print(biggest.value)
+	for i in currentNodes:
+		if i.value == biggest.value:
+			bigList.append(i)
+			if i == opponentMoves[0]:
+				win = "ITS OVER"
+				
+			print(i.row,i.column,i.value)
+def findMin():
+	global currentNodes
+	global bigList
+	global win
+	global last
+	print("MIN")
+	currentNodes = []
+	smallList = []
+	for i in bigList:
+		for o in i.full:
+			currentNodes.append(o)
+			print(o.row,o.column,o.value)
+
+	currentNodes = sorted(currentNodes, key = lambda x: x.value, reverse=False)
+	smallest = currentNodes[0]
+	print(smallest.value)
+	for i in currentNodes:
+		if i.value == smallest.value:
+			smallList.append(i)
+			if i == opponentMoves[0]:
+				win = "ITS OVER"
+				last = i
+			print(i.row,i.column,i.value)		
 		
 #then print out that move and start again
 def main():
