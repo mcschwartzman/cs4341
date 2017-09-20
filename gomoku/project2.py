@@ -189,42 +189,69 @@ def IDS():
 			
 				for l in i.pathQ:
 					newPath.add_node(l)
-				if deepness% 2 == 0:
-					newPiece(k.row,k.column,"Y")
-				else:
-					newPiece(k.row,k.column,"O")
-
+				
+				newPiece(k.row,k.column,"F")
+				
 				if k.row >= 0 and k.column>=0:
 					newPath.add_node2(GameBoard[int(k.row)][int(k.column)])
+
 					placeHolder.append(newPath)
 	
 		
 		emptyNodes = placeHolder	
-		for i in placeHolder:
-			#print(i)
+		#for i in placeHolder:
+			##print(i)
 		
-			for y in i.pathQ:
-				print(y.row,y.column),
-			print("\n")
-		print(deepness)
+			#for y in i.pathQ:
+				#print(y.row,y.column),
+			#print("\n")
+		#print(deepness)
 	deepness = deepness +1	
-	if deepness < 6:
+	if deepness < 5:
 		IDS()
 	else:
 		print("END")
-		#assignHeuristics()
-		
-#def assignHeuristics():
-	#for i in emptyNodes:
-		#for h in i.pathQ:
-			#print(h.row, h.column),
-		#print("\n")
-		
-		
-					
-#need to do iterative deepening search for each of the empty nodes
-#iterate like 6 times
+		addHeuristics()
 #then assign heuristic to botton postion
+def addHeuristics():
+	yourList = []
+	opponentList = []
+	for i in emptyNodes:
+		value = 0
+		for g in i.pathQ:
+			if value == 0:
+				g.lists = "O"
+				
+				value = 1
+			else:
+				g.lists = "Y"
+		
+				value = 0
+	for i in emptyNodes:
+		newListY = []
+		newListO = []
+		for g in i.pathQ:
+			if g.lists == "Y":
+				newListY.append(g)
+			else:
+				newListO.append(g)
+		
+		yourList.append(newListY)
+		opponentList.append(newListO)
+		
+	for i in yourList:
+		for g in i:
+			#here assign heuristics based off of how many in row/column
+			print(g.row,g.column,g.lists)
+		print("\n")
+		
+	for i in opponentList:
+		for g in i:
+			#here assign heuristics based off of how many in row/column
+			print(g.row,g.column,g.lists)
+		print("\n")					
+
+
 #then minimax back up to find next move
 #then print out that move and start again
 def main():
