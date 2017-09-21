@@ -281,6 +281,7 @@ def allSame(lists):
 global currentNodes
 global bigList			
 global win
+global smallList
 win = 1
 global last
 last = ""
@@ -288,6 +289,8 @@ def minimax():
 	global currentNodes
 	global bigList
 	global win
+	global smallList
+
 	global last
 	currentNodes = []
 	for i in emptyNodes:
@@ -307,52 +310,81 @@ def findMax():
 	global currentNodes
 	global bigList
 	global win
+	global smallList
+
 	global last
-	print("MAX")
+	#print("MAX")
 	bigList = []
 
 	currentNodes = sorted(currentNodes, key = lambda x: x.value, reverse=True)
 	
 	biggest = currentNodes[0]
-	print(biggest.value)
+	#print(biggest.value)
 	for i in currentNodes:
 		if i.value == biggest.value:
 			bigList.append(i)
 			if i == opponentMoves[0]:
 				win = "ITS OVER"
-				
-			print(i.row,i.column,i.value)
+				last = smallList[0]
+			#print(i.row,i.column,i.value)
 def findMin():
 	global currentNodes
 	global bigList
 	global win
+	global smallList
+
 	global last
-	print("MIN")
+	#print("MIN")
 	currentNodes = []
 	smallList = []
 	for i in bigList:
 		for o in i.full:
 			currentNodes.append(o)
-			print(o.row,o.column,o.value)
+			#print(o.row,o.column,o.value)
 
 	currentNodes = sorted(currentNodes, key = lambda x: x.value, reverse=False)
 	smallest = currentNodes[0]
-	print(smallest.value)
+	#print(smallest.value)
 	for i in currentNodes:
 		if i.value == smallest.value:
 			smallList.append(i)
 			if i == opponentMoves[0]:
 				win = "ITS OVER"
-				last = i
-			print(i.row,i.column,i.value)		
-		
+				last = bigList[0]
+			#print(i.row,i.column,i.value)		
+def printOutStuff():
+	print("Groupx"),
+	#print(""),
+	print(last.row),	
+	#print(""),
+	column = last.column
+	#print(column)
+	c = "A"
+	if column == 1:
+		c = "A"
+	elif column == 2:
+		c = "B"
+	elif column == 3:
+		c = "C"
+	elif column == 4:
+		c = "D"
+	elif column == 5:
+		c = "E"
+	elif column == 6:
+		c = "F"
+	elif column == 7:
+		c = "G"			
+	print(c)			
 #then print out that move and start again
 def main():
+	global last
 	isMyTurn()
 	IDS()
 	minimax()
+	printOutStuff()
 	
 
+	
 if __name__ == "__main__":
 	main()		
 
