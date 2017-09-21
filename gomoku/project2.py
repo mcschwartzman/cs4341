@@ -6,11 +6,12 @@ import collections
 
 
 class FakePiece:
-    def __init__(self,value,row, column, types):
+    def __init__(self,value,row, column, types,parent):
         self.value = value
         self.types= types    # an int
         self.full = []
-        self.empty = []     # a list of nodes
+        self.empty = []
+        self.parent =parent    # a list of nodes
         self.row = row
         self.column  = column
 
@@ -21,8 +22,9 @@ class FakePiece:
 		self.empty.append(childNode)		
 
 class GamePiece:
-    def __init__(self,value,row, column, types):
+    def __init__(self,value,row, column, types,parent):
         self.value = value
+        self.parent = parent
         self.types= types    # an int
         self.full = []
         self.empty = []     # a list of nodes
@@ -55,15 +57,44 @@ class path:
 global fakeList
 fakeList = []
 global GameBoard
-GameBoard = np.zeros([15,15], dtype = object)
+#GameBoard = np.zeros([15,15], dtype = object)
+GameBoard = []                                                        
+for i in range (0, 16):                               
+    new = []                 
+    for j in range (0, 16):          
+        new.append(GamePiece(0,i,j,"E",None))             
+    GameBoard.append(new)
+#print(GameBoard)
+#for i in GameBoard:
+	#if i.all() == 0:
+		#i = GamePiece(0,i.rows,i.column,"E",None)
+#rows = 15
+#columns = 15
+
+
+#while length < 15:
+	#gameColumn.append(GamePiece(0,length,0,"E",None))
+	#length = length +1
+#GameBoard = []
+#length = 0
+#while length < 15:
+	#for i in gameColumn:
+		#i.column = length
+	#GameBoard.append(gameColumn)
+	#length = length +1
+#print(matrix)
+
+    #print(end="\n")
+    
 global opponentMoves
 opponentMoves = []
-global myMoves
-myMoves = []
+#global myMoves
+#myMoves = []
 ###Boolean Function to check if My Turn###
 f = open("move_file.txt")
 def isMyTurn():
   global GameBoard
+  global matrix
   fileExistsBool = os.path.isfile('./file.txt')
 
   if (fileExistsBool):
@@ -88,447 +119,193 @@ def isMyTurn():
 		row = 5		
 	f.read(1)
 	column = f.read(1)
-
+	
 	
 	#GameBoard[row][column] = GamePiece(0,row,column,"O")
 	#print(GameBoard)
 	#print(row,column)
 	f.readline(1)
 	f.readline(1)
-	newPiece(row,column,"O")
+	GameBoard[int(row)][int(column)] = GamePiece(0,row,column,"O",None)
+	##adds new piece to gameboard####
+	
+	#newPiece(row,column,"O")
 	opponentMoves.append(GameBoard[int(row)][int(column)])
+def setHeuristic(l):
+	for i in l:
+		if i.row == i.parent.row:
+			#print("TWO")
+			#i.value = i.value + 2
+			if i.parent.row == i.parent.parent.row:
+				#print("THREE")
+				#i.value = i.value + 3
+				if i.parent.parent.row == i.parent.parent.parent.row:
+					#print("FOUR")
+					#i.value = i.value + 4
+					if i.parent.parent.parent.row == i.parent.parent.parent.parent.row:
+						#print("FIVE")
+						i.value = i.value + 5
+		#print(i.row,i.column,i.parent)
 	
-	#print("EMPTY")
-	#for i in GameBoard[int(row)][int(column)].empty:
-		#print(i.row,i.column)
-			
-	#print("FULL")
-	#for i in GameBoard[int(row)][int(column)].full:
-		#print(i.row,i.column)
-
-def newPiece(row,column,types):
-	global GameBoard
+	for i in l:
+		if i.column == i.parent.column:
+			#print("TWO")
+			if i.parent.column == i.parent.parent.column:
+				#print("THREE")
+				if i.parent.parent.column == i.parent.parent.parent.column:
+					#print("FOUR")
+					if i.parent.parent.parent.column == i.parent.parent.parent.parent.column:
+						#print("FIVE")
+						i.value = 5
+		#print(i.row,i.column,i.parent)	
+def checkEmpty(l,l2):
 	global fakeList
-	#row
-
-	GameBoard[int(row)][int(column)] = GamePiece(0,row,column,types)
-
-	
-	if GameBoard[int(row)+1][int(column)] != 0 and GameBoard[int(row)+1][int(column)].types != "F":
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)])
-		
-		
-	if GameBoard[int(row)+1][int(column)] == 0:
-		GameBoard[int(row)+1][int(column)] = FakePiece(0,row+1,column,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)])
-	
-
-		
-	if GameBoard[int(row)-1][int(column)] != 0 and GameBoard[int(row)-1][int(column)] != "F":
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)])
-		
-	if GameBoard[int(row)-1][int(column)] == 0:
-		GameBoard[int(row)-1][int(column)] = FakePiece(0,row-1,column,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)])
-
-	#column	
-	if GameBoard[int(row)][int(column)+1] != 0 and GameBoard[int(row)][int(column)+1] != "F":
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)][int(column)+1])
-					
-	if GameBoard[int(row)][int(column)+1] == 0:
-		GameBoard[int(row)][int(column)+1] = FakePiece(0,row,int(column)+1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)][int(column)+1])
-
-
-	if GameBoard[int(row)][int(column)-1] != 0 and GameBoard[int(row)][int(column)-1] != "F":
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)][int(column)-1])
-		
-	if GameBoard[int(row)][int(column)-1] == 0:
-		GameBoard[int(row)][int(column)-1] = FakePiece(0,row,int(column)-1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)][int(column)-1])
-
-
-	#diagonal	
-	if GameBoard[int(row)+1][int(column)+1] != 0 and GameBoard[int(row)+1][int(column)+1] != "F":
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)+1])
-		
-	if GameBoard[int(row)+1][int(column)+1] == 0:
-		GameBoard[int(row)+1][int(column)+1] = FakePiece(0,row+1,int(column)+1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)+1])
-
-
-		
-	if GameBoard[int(row)+1][int(column)-1] != 0 and GameBoard[int(row)+1][int(column)-1] != "F":
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)-1])
-		
-	if GameBoard[int(row)+1][int(column)-1] == 0:
-		GameBoard[int(row)+1][int(column)-1] = FakePiece(0,row+1,int(column)-1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)-1])
-
-
-		
-	if GameBoard[int(row)-1][int(column)+1] != 0 and GameBoard[int(row)-1][int(column)+1] != "F":
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)+1])
-		
-	if GameBoard[int(row)-1][int(column)+1] == 0:
-		GameBoard[int(row)-1][int(column)+1] = FakePiece(0,row-1,int(column)+1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)+1])
-
-		
-	if GameBoard[int(row)-1][int(column)-1] != 0 and GameBoard[int(row)-1][int(column)-1] != "F":
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)-1])
-		
-	if GameBoard[int(row)-1][int(column)-1] == 0:
-		GameBoard[int(row)-1][int(column)-1] = FakePiece(0,row-1,int(column)-1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)-1])
-				
-def fakePiece(row,column,types):
-	global GameBoard
-	global fakeList
-	#row
-	GameBoard[int(row)][int(column)] = FakePiece(0,row,column,types)
-
-
-	
-	if GameBoard[int(row)+1][int(column)] != 0:
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)])
-		
-	if GameBoard[int(row)+1][int(column)] == 0:
-		GameBoard[int(row)+1][int(column)] = FakePiece(0,row+1,column,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)])
-	
-
-		
-	if GameBoard[int(row)-1][int(column)] != 0:
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)])
-		
-	if GameBoard[int(row)-1][int(column)] == 0:
-		GameBoard[int(row)-1][int(column)] = FakePiece(0,row-1,column,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)])
-
-	#column	
-	if GameBoard[int(row)][int(column)+1] != 0:
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)][int(column)+1])
-					
-	if GameBoard[int(row)][int(column)+1] == 0:
-		GameBoard[int(row)][int(column)+1] = FakePiece(0,row,int(column)+1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)][int(column)+1])
-
-
-	if GameBoard[int(row)][int(column)-1] != 0:
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)][int(column)-1])
-		
-	if GameBoard[int(row)][int(column)-1] == 0:
-		GameBoard[int(row)][int(column)-1] = FakePiece(0,row,int(column)-1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)][int(column)-1])
-
-
-	#diagonal	
-	if GameBoard[int(row)+1][int(column)+1] != 0:
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)+1])
-		
-	if GameBoard[int(row)+1][int(column)+1] == 0:
-		GameBoard[int(row)+1][int(column)+1] = FakePiece(0,row+1,int(column)+1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)+1])
-
-
-		
-	if GameBoard[int(row)+1][int(column)-1] != 0:
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)+1][int(column)-1])
-		
-	if GameBoard[int(row)+1][int(column)-1] == 0:
-		GameBoard[int(row)+1][int(column)-1] = FakePiece(0,row+1,int(column)-1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)+1][int(column)-1])
-
-
-		
-	if GameBoard[int(row)-1][int(column)+1] != 0:
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)+1])
-		
-	if GameBoard[int(row)-1][int(column)+1] == 0:
-		GameBoard[int(row)-1][int(column)+1] = FakePiece(0,row-1,int(column)+1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)+1])
-
-		
-	if GameBoard[int(row)-1][int(column)-1] != 0:
-		GameBoard[int(row)][int(column)].addFull(GameBoard[int(row)-1][int(column)-1])
-		
-	if GameBoard[int(row)-1][int(column)-1] == 0:
-		GameBoard[int(row)-1][int(column)-1] = FakePiece(0,row-1,int(column)-1,types)
-		GameBoard[int(row)][int(column)].addEmpty(GameBoard[int(row)-1][int(column)-1])
-#need to do iterative deepening search for each of the empty nodes
-#iterate like 6 times
-global deepness
-global emptyNodes
-global placeHolder
-placeHolder = []
-emptyNodes = []
-deepness = 0
-def IDS():
-	global emptyNodes
-	global deepness
-	global myMoves
-
-	global placeHolder
-	global GameBoard
-	#print("IDS")
-	if deepness == 0:
-		newPath = path("G")
-		for i in opponentMoves:
-			newPath.add_node(i)
-			emptyNodes.append(newPath)
-		
-		newPath = path("G")
-		for i in myMoves:
-			#print(i.row,i.column)
-			newPath.add_node(i)		
-		#print(opponentMoves[0].row,opponentMoves[0].column)
-			emptyNodes.append(newPath)
-	else:
-		for i in emptyNodes:
-			#print(i)
-			for k in i.pathQ[0].empty:
-				#print(k.row, k.column,k.types)
-			
-				
-				newPath = path("G")
-			
-				for l in i.pathQ:
-					#print(l.row,l.column),
-					newPath.add_node(l)
-
-				#print("\n")
-
-				fakePiece(k.row,k.column,"F")
-				
-
-				if k.row >= 0 and k.column>=0:
-					newPath.add_node2(GameBoard[int(k.row)][int(k.column)])
-					placeHolder.append(newPath)
-			#for y in placeHolder[0]:
-				#for t in i.pathQ[0].full:
-					#if t.row == y.row and t.column == y.column:
-					#placeHolder.remove(y)
-		emptyNodes = placeHolder	
-		#for i in emptyNodes:
-			##print(i)
-		
-			#for y in i.pathQ:
-				##print(deepness)
-				#print(y.row,y.column),
-			#print("\n")
-			#print(deepness)
-	deepness = deepness +1	
-	if deepness < 20:
-		IDS()
-	else:
-		#print("END")
-		addHeuristics()
-
-
-def addHeuristics():
-	global GameBoard
-	theList = []
-	rowList = []
-	for i in emptyNodes:
-		#print(deepness)
-		if deepness == 20:
-			theList.append(i)						
-	for r in theList:
-		newList = []
-		for g in r.pathQ:
-			
-			newList.append(g.row)
-			#print(g.row),
-			#print(g.column)
-		if (len(set(newList)) < len(newList)):
-			#print("TRUE")
-			for i in r.pathQ:
-				i.value = i.value + len(newList)-len(set(newList))
-				#print(i.row,i.column,i.value)
-
-		#print("\n")
-		if allSame(newList) ==True and len(newList) == 5:
-			
-			#print(r.pathQ[0].row,r.pathQ[0].column)
-			r.pathQ[0].value = 10000
-			
-		else:
-			for i in r.pathQ:
-				i.value = i.value + 0			
-			#break
-		
-		
-	for r in theList:
-		newList = []
-		for g in r.pathQ:
-			
-			newList.append(g.column)
-			#print(g.row),
-			#print(g.column)
-		if (len(set(newList)) < len(newList)):
-			#print("TRUE")
-			for i in r.pathQ:
-				i.value = i.value + len(newList)-len(set(newList))
-				#print(i.row,i.column,i.value)
-
-		#print("\n")
-		if allSame(newList) ==True and len(newList) == 5:
-			#print(r.pathQ[0].row,r.pathQ[0].column)
-			r.pathQ[0].value = 10000
-			
-		else:
-			for i in r.pathQ:
-				i.value = i.value + 0			
-			#break	
-	
-global newList
-global nList	
-
-def allSame(lists):
-	return all(x == lists[0] for x in lists)
-
-global currentNodes
-global bigList			
-global win
-global smallList
-win = 1
-global last
-last = ""
-def minimax():
-	global GameBoard
-	global currentNodes
-	global bigList
-	global win
-	win = 1
-	global last
-	
-	global smallList
-
-	global last
-	currentNodes = []
-	for i in emptyNodes:
-		#print(i.pathQ[0].row, i.pathQ[0].column, i.pathQ[0].value)
-		currentNodes.append(i.pathQ[0])
-	end = 1
-	while end == 1:
-		if win != "ITS OVER":
-			findMax()
-			if win != "ITS OVER":
-				findMin()
-		elif win == "ITS OVER":
-			#print(last.row,last.column)
-			end = 2
-	#print("\n")
-def findMax():
-	global currentNodes
-	global bigList
-	global win
-	global smallList
-
-	global last
-	#print("MAX")
-	bigList = []
-
-	currentNodes = sorted(currentNodes, key = lambda x: x.value, reverse=True)
-	
-	biggest = currentNodes[0]
-	#print(biggest.value)
-	for i in currentNodes:
-		if i.value == biggest.value:
-			bigList.append(i)
-			if i == opponentMoves[0]:
-				win = "ITS OVER"
-				last = smallList[0]
-			#print(i.row,i.column,i.value)
-def findMin():
-	global currentNodes
-	global bigList
-	global win
-	global smallList
-
-	global last
-	#print("MIN")
-	currentNodes = []
-	smallList = []
-	for i in bigList:
-		for o in i.full:
-			currentNodes.append(o)
-			#print(o.row,o.column,o.value)
-
-	currentNodes = sorted(currentNodes, key = lambda x: x.value, reverse=False)
-	smallest = currentNodes[0]
-	#print(smallest.value)
-	for i in currentNodes:
-		if i.value == smallest.value:
-			smallList.append(i)
-			if i == opponentMoves[0]:
-				win = "ITS OVER"
-				last = bigList[0]
-			#print(i.row,i.column,i.value)		
-def printOutStuff():
-	global myMoves
-	print("Groupx"),
-	#print(""),
-	print(last.row),	
-	#print(""),
-	column = int(last.column)
-	#print(column)
-	c = "A"
-	if column == 1:
-		c = "A"
-	elif column == 2:
-		c = "B"
-	elif column == 3:
-		c = "C"
-	elif column == 4:
-		c = "D"
-	elif column == 5:
-		c = "E"
-	elif column == 6:
-		c = "F"
-	elif column == 7:
-		c = "G"
-	elif column == 8:
-		c = "H"	
-	elif column == 9:
-		c = "I"	
-	elif column == 10:
-		c = "J"	
-	elif column == 11:
-		c = "K"	
-	elif column == 12:
-		c = "L"	
-	elif column == 13:
-		c = "M"			
-	print(c)
-	myMoves.append(last)
-	
-def restartGame():
-	global myMoves
-	global GameBoard
+	global e
 	global opponentMoves
-	global win
-	global last
-	last = ""
-	win=""
-	GameBoard = np.zeros([15,15], dtype = int)
-	GameBoard = np.zeros([15,15], dtype = object)
-	for i in opponentMoves:
-		#print(i.row,i.column)
-		#for f in i.empty:
-			#print(f.row,f.column),
-		#print("")
-		newPiece(i.row,i.column,'O')
-		#for i in GameBoard[i.row][i.column].empty:
-			#print(i.row,i.column)
-	for i in myMoves:
-		#print(i)
-		newPiece(i.row,i.column,'Y')
 	
+	for i in l:
+		#print("___")
+		#print(GameBoard[int(i.row)][int(i.column)].row ,GameBoard[int(i.row)][int(i.column)].column)
+		#if GameBoard[int(i.row)][int(i.column)].row == if GameBoard[int(i.row)-1][int(i.column)].row == :
+			
+			
+			
+		if GameBoard[int(i.row)][int(i.column)].row != 15:
+			if GameBoard[int(i.row)+1][int(i.column)].types == "E":
+				#print("Right")
+				#print(GameBoard[int(i.row)+1][int(i.column)].row,GameBoard[int(i.row)+1][int(i.column)].column)
+				GameBoard[int(i.row)+1][int(i.column)].parent = GameBoard[int(i.row)][int(i.column)]
+				l2.append(GameBoard[int(i.row)+1][int(i.column)])		
 
-	#print(GameBoard)				
-#then print out that move and start again
+		if GameBoard[int(i.row)][int(i.column)].column != 15:					
+			if GameBoard[int(i.row)][int(i.column)+1].types == "E":
+				#print("UP")
+				#print(GameBoard[int(i.row)][int(i.column)+1].row,GameBoard[int(i.row)][int(i.column)+1].column)
+				GameBoard[int(i.row)][int(i.column)+1].parent = GameBoard[int(i.row)][int(i.column)]
+				l2.append(GameBoard[int(i.row)][int(i.column)+1])	
+				
+		if GameBoard[int(i.row)][int(i.column)].row != 0:	
+			if GameBoard[int(i.row)-1][int(i.column)].types == "E":
+				#print("LEFT")
+				#print(GameBoard[int(i.row)-1][int(i.column)].row,GameBoard[int(i.row)-1][int(i.column)].column)
+				GameBoard[int(i.row)-1][int(i.column)].parent = GameBoard[int(i.row)][int(i.column)]
+				l2.append(GameBoard[int(i.row)-1][int(i.column)])
+						
+		if GameBoard[int(i.row)][int(i.column)].row != 0:								
+			if GameBoard[int(i.row)][int(i.column)-1].types == "E":
+				l2.append(GameBoard[int(i.row)][int(i.column)-1])	
+				GameBoard[int(i.row)][int(i.column)-1].parent = GameBoard[int(i.row)][int(i.column)]
+				#print("DOWN")
+				#print(GameBoard[int(i.row)][int(i.column)-1].row,GameBoard[int(i.row)][int(i.column)-1].column)
+		if GameBoard[int(i.row)][int(i.column)].row  == 4 and GameBoard[int(i.row)][int(i.column)].column == 15:
+			e = 1
+
+global newList
+newList = []	
+global otherList
+otherList = []	
+global bestList
+bestList = []
+global e
+e = 0
+global listType
+listType = ""	
+def makeTree():
+	global opponentMoves
+	global fakeList
+	global e
+	global newList
+	global bestList
+	global otherList
+	checkEmpty(opponentMoves,fakeList)
+	#print("FAKELIST")
+	newList = []
+	otherList = []
+	checkEmpty(fakeList, newList)
+	fakeList = []
+	checkEmpty(newList,fakeList)
+	newList = []
+	checkEmpty(fakeList,newList)
+	fakeList = []
+	while e != 1:
+		for i in newList:
+			if i.value == 5:
+				otherList.append(i)
+				newList.remove(i)
+			if not newList:
+				e = 1
+		checkEmpty(fakeList,newList)
+		checkEmpty(newList,fakeList)
+		bestList = fakeList
+		newList =[]
+		setHeuristic(fakeList)
+		listType = "NEWLIST"
+		for i in fakeList:
+			if i.value == 5:
+				otherList.append(i)
+				fakeList.remove(i)	
+			if not fakeList:
+				e=1
+		checkEmpty(fakeList,newList)
+		bestList = newList
+		fakeList = []
+		listType = "FAKELIST"
+global final 
+final = []		
+def minimax():
+	global final
+	global bestList
+	global otherList
+	final = []	
+	for i in otherList:
+		#print(i.value)
+		bestList.append(i)
+	#for i in bestList:
+		#print(i.value)
+	bestList = sorted(bestList, key = lambda x: x.parent.row, reverse=False	)
+	bestList = sorted(bestList, key = lambda x: x.parent.column, reverse=False	)
+
+	trashList = []
+	for i in bestList:
+		trashList.append(i.parent)
+		
+	newest = set(trashList)
+	for i in bestList:
+		placeHolder = []
+		for k in newest:
+			if i.parent.row == k.row and k.column == i.parent.column:
+				placeHolder.append(i)
+		final.append(placeHolder)
+		placeHolder = []
+	for i in final:
+		i = sorted(i, key = lambda x: x.value, reverse=False)
+
+	findMin()
+global minList
+minList = []
+def findMin():
+	minList = []
+	global final
+	smallest = 0
+	for i in final:
+		for j in i:
+			if j.value == smallest:
+				minList.append(j)
+	for i in minList:
+		i.parent.value = smallest
+	bestList = minList
+
+def findMax():
+	global final
+	maxList = []
+	largest = 5
+	for i in final:
+		for j in i:
+			if j.value == largest:
+				maxList.append(j)
+	for i in maxList:
+		i.parent.value = largest	
+	bestList = maxList
 def main():
 	global myMoves
 	
@@ -536,10 +313,8 @@ def main():
 	global last
 	global opponentMoves
 	isMyTurn()
-	IDS()
+	makeTree()
 	minimax()
-	printOutStuff()
-	#restartGame()
 
 if __name__ == "__main__":
 	main()		
