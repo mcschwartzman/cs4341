@@ -132,73 +132,100 @@ def isMyTurn():
 	#newPiece(row,column,"O")
 	opponentMoves.append(GameBoard[int(row)][int(column)])
 def setHeuristic(l):
+	global newList
+	global otherList
+
 	for i in l:
+
 		if i.row == i.parent.row:
 			#print("TWO")
-			#i.value = i.value + 2
+			i.value = i.value + 2
 			if i.parent.row == i.parent.parent.row:
 				#print("THREE")
-				#i.value = i.value + 3
+				i.value = i.value + 3
 				if i.parent.parent.row == i.parent.parent.parent.row:
 					#print("FOUR")
-					#i.value = i.value + 4
+					i.value = i.value + 4
 					if i.parent.parent.parent.row == i.parent.parent.parent.parent.row:
 						#print("FIVE")
-						i.value = i.value + 5
+						i.value = i.value+100
+						#l.remove(i)
+						#print(i.row,i.column,i.value)
+						#otherList.append(i)
 		#print(i.row,i.column,i.parent)
 	
 	for i in l:
 		if i.column == i.parent.column:
 			#print("TWO")
+			i.value = i.value + 2
 			if i.parent.column == i.parent.parent.column:
 				#print("THREE")
+				i.value = i.value + 3
 				if i.parent.parent.column == i.parent.parent.parent.column:
 					#print("FOUR")
+					i.value = i.value + 4
 					if i.parent.parent.parent.column == i.parent.parent.parent.parent.column:
 						#print("FIVE")
-						i.value = 5
-		#print(i.row,i.column,i.parent)	
+						i.value =i.value + 100
+						#l.remove(i)
+						#print(i.row,i.column,i.value)
+						#otherList.append(i)
+		#print(i.row,i.column,i.parent)
+global swithedList
+switchedList = []	
 def checkEmpty(l,l2):
 	global fakeList
 	global e
+
 	global opponentMoves
 	
 	for i in l:
 		#print("___")
-		#print(GameBoard[int(i.row)][int(i.column)].row ,GameBoard[int(i.row)][int(i.column)].column)
+		#print(GameBoard[int(i.row)][int(i.column)].row ,GameBoard[int(i.row)][int(i.column)].column,GameBoard[int(i.row)][int(i.column)].value)
 		#if GameBoard[int(i.row)][int(i.column)].row == if GameBoard[int(i.row)-1][int(i.column)].row == :
+
+			#break
 			
 			
-			
-		if GameBoard[int(i.row)][int(i.column)].row != 15:
+		if GameBoard[int(i.row)][int(i.column)].row != 15 and GameBoard[int(i.row)][int(i.column)].value<100:
 			if GameBoard[int(i.row)+1][int(i.column)].types == "E":
 				#print("Right")
 				#print(GameBoard[int(i.row)+1][int(i.column)].row,GameBoard[int(i.row)+1][int(i.column)].column)
 				GameBoard[int(i.row)+1][int(i.column)].parent = GameBoard[int(i.row)][int(i.column)]
-				l2.append(GameBoard[int(i.row)+1][int(i.column)])		
+				GameBoard[int(i.row)+1][int(i.column)].types = "F"
+				l2.append(GameBoard[int(i.row)+1][int(i.column)])
+				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)+1][int(i.column)])		
 
-		if GameBoard[int(i.row)][int(i.column)].column != 15:					
+		if GameBoard[int(i.row)][int(i.column)].column != 15 and GameBoard[int(i.row)][int(i.column)].value<100:					
 			if GameBoard[int(i.row)][int(i.column)+1].types == "E":
 				#print("UP")
 				#print(GameBoard[int(i.row)][int(i.column)+1].row,GameBoard[int(i.row)][int(i.column)+1].column)
 				GameBoard[int(i.row)][int(i.column)+1].parent = GameBoard[int(i.row)][int(i.column)]
-				l2.append(GameBoard[int(i.row)][int(i.column)+1])	
+				GameBoard[int(i.row)][int(i.column)+1].types = "F"
+				l2.append(GameBoard[int(i.row)][int(i.column)+1])
+				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)][int(i.column)+1])		
+	
 				
-		if GameBoard[int(i.row)][int(i.column)].row != 0:	
+		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].value<100:	
 			if GameBoard[int(i.row)-1][int(i.column)].types == "E":
 				#print("LEFT")
 				#print(GameBoard[int(i.row)-1][int(i.column)].row,GameBoard[int(i.row)-1][int(i.column)].column)
 				GameBoard[int(i.row)-1][int(i.column)].parent = GameBoard[int(i.row)][int(i.column)]
+				GameBoard[int(i.row)-1][int(i.column)].types = "F"
 				l2.append(GameBoard[int(i.row)-1][int(i.column)])
+				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)-1][int(i.column)])		
 						
-		if GameBoard[int(i.row)][int(i.column)].row != 0:								
+		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].value<100:								
 			if GameBoard[int(i.row)][int(i.column)-1].types == "E":
-				l2.append(GameBoard[int(i.row)][int(i.column)-1])	
+				l2.append(GameBoard[int(i.row)][int(i.column)-1])
+				GameBoard[int(i.row)][int(i.column)-1].types = "F"	
 				GameBoard[int(i.row)][int(i.column)-1].parent = GameBoard[int(i.row)][int(i.column)]
+				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)][int(i.column)-1])		
+
 				#print("DOWN")
 				#print(GameBoard[int(i.row)][int(i.column)-1].row,GameBoard[int(i.row)][int(i.column)-1].column)
-		if GameBoard[int(i.row)][int(i.column)].row  == 4 and GameBoard[int(i.row)][int(i.column)].column == 15:
-			e = 1
+		#if GameBoard[int(i.row)][int(i.column)].row  == 4 and GameBoard[int(i.row)][int(i.column)].column == 15:
+			#e = 1
 
 global newList
 newList = []	
@@ -223,89 +250,180 @@ def makeTree():
 	otherList = []
 	checkEmpty(fakeList, newList)
 	fakeList = []
+	for i in newList:
+		i.types = "E"
 	checkEmpty(newList,fakeList)
+	for i in fakeList:
+		i.types = "E"
 	newList = []
 	checkEmpty(fakeList,newList)
+	for i in newList:
+		i.types = "E"
 	fakeList = []
-	while e != 1:
-		for i in newList:
-			if i.value == 5:
-				otherList.append(i)
-				newList.remove(i)
-			if not newList:
-				e = 1
-		checkEmpty(fakeList,newList)
+	e= 0
+	while e < 1:
+		setHeuristic(newList)
+
+		#for i in newList:
+			#if i.value >= 1000000:
+				#otherList.append(i)
+				#newList.remove(i)
+			#if not newList:
+				#e = 1
 		checkEmpty(newList,fakeList)
+		for i in fakeList:
+			i.types = "E"
 		bestList = fakeList
 		newList =[]
 		setHeuristic(fakeList)
-		listType = "NEWLIST"
-		for i in fakeList:
-			if i.value == 5:
-				otherList.append(i)
-				fakeList.remove(i)	
-			if not fakeList:
-				e=1
+		#for i in fakeList:
+			#if i.value >= 1000000:
+				#otherList.append(i)
+				#fakeList.remove(i)
+	
+			#if not fakeList:
+				#e=1
 		checkEmpty(fakeList,newList)
+		for i in newList:
+			i.types = "E"
 		bestList = newList
 		fakeList = []
-		listType = "FAKELIST"
+		e = e+1
 global final 
-final = []		
+final = []
+global end 
+end = 0		
 def minimax():
 	global final
 	global bestList
 	global otherList
+	global end
 	final = []	
-	for i in otherList:
-		#print(i.value)
-		bestList.append(i)
-	#for i in bestList:
-		#print(i.value)
+	#for i in otherList:
+		#bestList.append(i)
+	#setHeuristic(bestList)
+	for i in bestList:
+		i.value = i.value +abs(int(i.row) - int(opponentMoves[0].row))  + abs(int(i.column) - int(opponentMoves[0].column)) 
+
+		#print(i.row,i.column,i.value)
 	bestList = sorted(bestList, key = lambda x: x.parent.row, reverse=False	)
 	bestList = sorted(bestList, key = lambda x: x.parent.column, reverse=False	)
 
-	trashList = []
-	for i in bestList:
-		trashList.append(i.parent)
+	#trashList = []
+	#for i in bestList:
+		#trashList.append(i.parent)
 		
-	newest = set(trashList)
-	for i in bestList:
-		placeHolder = []
-		for k in newest:
-			if i.parent.row == k.row and k.column == i.parent.column:
-				placeHolder.append(i)
-		final.append(placeHolder)
-		placeHolder = []
-	for i in final:
-		i = sorted(i, key = lambda x: x.value, reverse=False)
+	#newest = set(trashList)
+	#for i in bestList:
+		#placeHolder = []
+		#for k in newest:
+			#if i.parent.row == k.row and k.column == i.parent.column:
+				#placeHolder.append(i)
+		#final.append(placeHolder)
+		#placeHolder = []
+	#for i in final:
+		#i = sorted(i, key = lambda x: x.value, reverse=False)
+		#for j in i:
+			#print(j.row,j.column,j.value, j.parent.row,j.parent.column)
 
-	findMin()
-global minList
-minList = []
+	change = 0
+	print(opponentMoves[0].row,opponentMoves[0].column)
+	#while change == 0:
+		#print(bestList[0].row, bestList[0].column)
+		#if bestList[0] != opponentMoves[0]:
+			#findMax()
+		#if bestList[0] != opponentMoves[0]:
+			#findMin()
+	for k in opponentMoves[0].empty:
+		print(k.row,k.column)		
+		#else:
+	stopper =10
+	while stopper > 0:
+		findMin()		
+		
+		findMax()		
+		stopper=stopper-1
+		
 def findMin():
-	minList = []
+	print("min")
+	global bestList
 	global final
-	smallest = 0
-	for i in final:
-		for j in i:
-			if j.value == smallest:
-				minList.append(j)
-	for i in minList:
-		i.parent.value = smallest
-	bestList = minList
+	global end
+	maxList = []
+	someList = []
+	for i in opponentMoves[0].empty:
+		
+		i.value = 0	
+	for i in bestList:
+		#print(i.parent.row,i.parent.column, i.row,i.column,i.value)
+		for y in i.parent.empty:
+			maxList.append(y.value)
+		i.parent.value = min(maxList)
+		maxList = []
+	for i in bestList:
+		someList.append(i.parent)
+	bestList = set(someList)	
+	for i in someList:
+		print(i.row,i.column,i.value)
+		for j in i.empty:
+			print(j.row,j.column,j.value),
+		print("MOO")
+		for k in opponentMoves[0].empty:
+			if i.row == k.row and i.column == k.column:
+				print("YOU WINNNN")
+				break
+	
+
 
 def findMax():
+	print("max")
+	global bestList
 	global final
+	global end
+	for i in opponentMoves[0].empty:
+		
+		i.value = 100000	
 	maxList = []
-	largest = 5
-	for i in final:
-		for j in i:
-			if j.value == largest:
-				maxList.append(j)
-	for i in maxList:
-		i.parent.value = largest	
-	bestList = maxList
+	someList = []
+	for i in bestList:
+		#print(i.parent.row,i.parent.column, i.row,i.column,i.value)
+		for y in i.parent.empty:
+			maxList.append(y.value)
+		i.parent.value = max(maxList)
+		maxList = []
+	for i in bestList:
+		someList.append(i.parent)
+	bestList = set(someList)	
+	for i in someList:
+		print(i.row,i.column,i.value)
+		for j in i.empty:
+			print(j.row,j.column,j.value),
+		print("MOO")
+		for k in opponentMoves[0].empty:
+			if i.row == k.row and i.column == k.column:
+				print("YOU WINNNN")
+				break
+	
+	
+	
+	
+	#largest = max(maxList)
+	#maxList = []
+	#print(largest)
+	#for i in final:
+		#for j in i:
+			#if j.value == largest:
+				#maxList.append(j)
+	#for i in maxList:
+		#i.parent.value = largest
+	#bestList = []
+	#for i in maxList:
+		#print(i.row,i.column,i.value)
+	#for i in maxList:
+		##if i.parent != opponentMoves[0]:
+		#bestList.append(i.parent)
+		#else:
+			#end = 1
 def main():
 	global myMoves
 	
