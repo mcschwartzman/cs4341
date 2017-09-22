@@ -1,8 +1,8 @@
 #Created 14 September 2017
 
 import os
-import numpy as np
-import collections
+
+
 
 
 class FakePiece:
@@ -187,35 +187,35 @@ def checkEmpty(l,l2):
 			#break
 			
 			
-		if GameBoard[int(i.row)][int(i.column)].row != 15 and GameBoard[int(i.row)][int(i.column)].value<100:
+		if GameBoard[int(i.row)][int(i.column)].row != 15 :
 			if GameBoard[int(i.row)+1][int(i.column)].types == "E":
 				#print("Right")
 				#print(GameBoard[int(i.row)+1][int(i.column)].row,GameBoard[int(i.row)+1][int(i.column)].column)
 				GameBoard[int(i.row)+1][int(i.column)].parent = GameBoard[int(i.row)][int(i.column)]
-				GameBoard[int(i.row)+1][int(i.column)].types = "F"
+				#GameBoard[int(i.row)+1][int(i.column)].types = "F"
 				l2.append(GameBoard[int(i.row)+1][int(i.column)])
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)+1][int(i.column)])		
 
-		if GameBoard[int(i.row)][int(i.column)].column != 15 and GameBoard[int(i.row)][int(i.column)].value<100:					
+		if GameBoard[int(i.row)][int(i.column)].column != 15:					
 			if GameBoard[int(i.row)][int(i.column)+1].types == "E":
 				#print("UP")
 				#print(GameBoard[int(i.row)][int(i.column)+1].row,GameBoard[int(i.row)][int(i.column)+1].column)
 				GameBoard[int(i.row)][int(i.column)+1].parent = GameBoard[int(i.row)][int(i.column)]
-				GameBoard[int(i.row)][int(i.column)+1].types = "F"
+				#GameBoard[int(i.row)][int(i.column)+1].types = "F"
 				l2.append(GameBoard[int(i.row)][int(i.column)+1])
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)][int(i.column)+1])		
 	
 				
-		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].value<100:	
+		if GameBoard[int(i.row)][int(i.column)].row != 0 :	
 			if GameBoard[int(i.row)-1][int(i.column)].types == "E":
 				#print("LEFT")
 				#print(GameBoard[int(i.row)-1][int(i.column)].row,GameBoard[int(i.row)-1][int(i.column)].column)
 				GameBoard[int(i.row)-1][int(i.column)].parent = GameBoard[int(i.row)][int(i.column)]
-				GameBoard[int(i.row)-1][int(i.column)].types = "F"
+				#GameBoard[int(i.row)-1][int(i.column)].types = "F"
 				l2.append(GameBoard[int(i.row)-1][int(i.column)])
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)-1][int(i.column)])		
 						
-		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].value<100:								
+		if GameBoard[int(i.row)][int(i.column)].row != 0 :								
 			if GameBoard[int(i.row)][int(i.column)-1].types == "E":
 				l2.append(GameBoard[int(i.row)][int(i.column)-1])
 				GameBoard[int(i.row)][int(i.column)-1].types = "F"	
@@ -261,8 +261,8 @@ def makeTree():
 		i.types = "E"
 	fakeList = []
 	e= 0
-	while e < 1:
-		setHeuristic(newList)
+	while e < 3:
+		#setHeuristic(newList)
 
 		#for i in newList:
 			#if i.value >= 1000000:
@@ -275,7 +275,7 @@ def makeTree():
 			i.types = "E"
 		bestList = fakeList
 		newList =[]
-		setHeuristic(fakeList)
+		#setHeuristic(fakeList)
 		#for i in fakeList:
 			#if i.value >= 1000000:
 				#otherList.append(i)
@@ -293,15 +293,18 @@ global final
 final = []
 global end 
 end = 0		
+global stopper
+stopper = 10
 def minimax():
 	global final
 	global bestList
+	global stopper
 	global otherList
 	global end
 	final = []	
 	#for i in otherList:
 		#bestList.append(i)
-	#setHeuristic(bestList)
+	setHeuristic(bestList)
 	for i in bestList:
 		i.value = i.value +abs(int(i.row) - int(opponentMoves[0].row))  + abs(int(i.column) - int(opponentMoves[0].column)) 
 
@@ -327,26 +330,34 @@ def minimax():
 			#print(j.row,j.column,j.value, j.parent.row,j.parent.column)
 
 	change = 0
-	print(opponentMoves[0].row,opponentMoves[0].column)
+	#print(opponentMoves[0].row,opponentMoves[0].column)
 	#while change == 0:
 		#print(bestList[0].row, bestList[0].column)
 		#if bestList[0] != opponentMoves[0]:
 			#findMax()
 		#if bestList[0] != opponentMoves[0]:
 			#findMin()
-	for k in opponentMoves[0].empty:
-		print(k.row,k.column)		
-		#else:
+	#for k in opponentMoves[0].empty:
+		##print(k.row,k.column)		
+	#for i in opponentMoves:
+		#for h in i.empty:
+			#print(h.row,h.column),
+			#for j in h.empty:
+				#print(j.row,j.column)
 	stopper =10
 	while stopper > 0:
-		findMin()		
-		
-		findMax()		
+		if stopper != 0:
+			findMin()		
+		if stopper !=0:
+			findMax()
+		else:
+			print(final[0].row, final[0].column)	
 		stopper=stopper-1
 		
 def findMin():
-	print("min")
+	#print("min")
 	global bestList
+	global stopper
 	global final
 	global end
 	maxList = []
@@ -364,19 +375,22 @@ def findMin():
 		someList.append(i.parent)
 	bestList = set(someList)	
 	for i in someList:
-		print(i.row,i.column,i.value)
-		for j in i.empty:
-			print(j.row,j.column,j.value),
-		print("MOO")
+		#print(i.row,i.column,i.value)
+		#for j in i.empty:
+			#print(j.row,j.column,j.value),
+		#print("MOO")
 		for k in opponentMoves[0].empty:
 			if i.row == k.row and i.column == k.column:
-				print("YOU WINNNN")
-				break
+				#print("YOU WINNNN")
+				final.append(i)
+				stopper = 0
+				#break
 	
 
 
 def findMax():
-	print("max")
+	#print("max")
+	global stopper
 	global bestList
 	global final
 	global end
@@ -395,14 +409,16 @@ def findMax():
 		someList.append(i.parent)
 	bestList = set(someList)	
 	for i in someList:
-		print(i.row,i.column,i.value)
-		for j in i.empty:
-			print(j.row,j.column,j.value),
-		print("MOO")
+		#print(i.row,i.column,i.value)
+		#for j in i.empty:
+			#print(j.row,j.column,j.value),
+		#print("MOO")
 		for k in opponentMoves[0].empty:
 			if i.row == k.row and i.column == k.column:
-				print("YOU WINNNN")
-				break
+				#print("YOU WINNNN")
+				final.append(i)
+				stopper = 0
+				#break
 	
 	
 	
@@ -435,5 +451,4 @@ def main():
 	minimax()
 
 if __name__ == "__main__":
-	main()		
-
+	main() 
