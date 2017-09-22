@@ -261,7 +261,7 @@ def makeTree():
 		i.types = "E"
 	fakeList = []
 	e= 0
-	while e < 3:
+	while e < 5:
 		#setHeuristic(newList)
 
 		#for i in newList:
@@ -298,6 +298,7 @@ stopper = 10
 def minimax():
 	global final
 	global bestList
+	global opponentMoves
 	global stopper
 	global otherList
 	global end
@@ -312,55 +313,46 @@ def minimax():
 	bestList = sorted(bestList, key = lambda x: x.parent.row, reverse=False	)
 	bestList = sorted(bestList, key = lambda x: x.parent.column, reverse=False	)
 
-	#trashList = []
-	#for i in bestList:
-		#trashList.append(i.parent)
-		
-	#newest = set(trashList)
-	#for i in bestList:
-		#placeHolder = []
-		#for k in newest:
-			#if i.parent.row == k.row and k.column == i.parent.column:
-				#placeHolder.append(i)
-		#final.append(placeHolder)
-		#placeHolder = []
-	#for i in final:
-		#i = sorted(i, key = lambda x: x.value, reverse=False)
-		#for j in i:
-			#print(j.row,j.column,j.value, j.parent.row,j.parent.column)
-
-	change = 0
-	#print(opponentMoves[0].row,opponentMoves[0].column)
-	#while change == 0:
-		#print(bestList[0].row, bestList[0].column)
-		#if bestList[0] != opponentMoves[0]:
-			#findMax()
-		#if bestList[0] != opponentMoves[0]:
-			#findMin()
-	#for k in opponentMoves[0].empty:
-		##print(k.row,k.column)		
-	#for i in opponentMoves:
-		#for h in i.empty:
-			#print(h.row,h.column),
-			#for j in h.empty:
-				#print(j.row,j.column)
-	stopper =10
 	while stopper > 0:
 		if stopper != 0:
 			findMin()		
 		if stopper !=0:
 			findMax()
 		else:
-			print(final[0].row, final[0].column)	
+			printItOut()	
 		stopper=stopper-1
-		
+def printItOut():
+	row = final[0].row
+	column = final[0].column
+	
+	if row == 1:
+		row = "A"
+	if row == 2:
+		row = "B"
+	if row == 3:
+		row = "C"
+	if row == 4:
+		row = "D"
+	if row == 5:
+		row = "E"
+	if row == 6:
+		row = "F"
+	if row == 7:
+		row = "G"
+	if row == 8:
+		row = "H"
+	if row == 9:
+		row = "I"
+	print(row,column)		
 def findMin():
 	#print("min")
 	global bestList
+	global opponentMoves
 	global stopper
 	global final
 	global end
 	maxList = []
+	final = []
 	someList = []
 	for i in opponentMoves[0].empty:
 		
@@ -379,11 +371,14 @@ def findMin():
 		#for j in i.empty:
 			#print(j.row,j.column,j.value),
 		#print("MOO")
-		for k in opponentMoves[0].empty:
-			if i.row == k.row and i.column == k.column:
+		for k in opponentMoves:
+			for y in k.empty:
+				if i.row == y.row and i.column == y.column:
+					#print(i.row,i.column,y.row,y.column,i.value)
+
 				#print("YOU WINNNN")
-				final.append(i)
-				stopper = 0
+					final.append(i)
+					stopper = 0
 				#break
 	
 
@@ -392,6 +387,7 @@ def findMax():
 	#print("max")
 	global stopper
 	global bestList
+	global opponentMoves
 	global final
 	global end
 	for i in opponentMoves[0].empty:
@@ -413,33 +409,16 @@ def findMax():
 		#for j in i.empty:
 			#print(j.row,j.column,j.value),
 		#print("MOO")
-		for k in opponentMoves[0].empty:
-			if i.row == k.row and i.column == k.column:
-				#print("YOU WINNNN")
-				final.append(i)
-				stopper = 0
-				#break
+		for k in opponentMoves:
+			for y in k.empty:
+				if i.row == y.row and i.column == y.column:
+					#print(i.row,i.column,y.row,y.column,i.value)
+					final.append(i)
+					stopper = 0
 	
 	
 	
 	
-	#largest = max(maxList)
-	#maxList = []
-	#print(largest)
-	#for i in final:
-		#for j in i:
-			#if j.value == largest:
-				#maxList.append(j)
-	#for i in maxList:
-		#i.parent.value = largest
-	#bestList = []
-	#for i in maxList:
-		#print(i.row,i.column,i.value)
-	#for i in maxList:
-		##if i.parent != opponentMoves[0]:
-		#bestList.append(i.parent)
-		#else:
-			#end = 1
 def main():
 	global myMoves
 	
@@ -449,6 +428,7 @@ def main():
 	isMyTurn()
 	makeTree()
 	minimax()
+
 
 if __name__ == "__main__":
 	main() 

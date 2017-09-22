@@ -1,4 +1,3 @@
-GroupX E 5
+GroupX D 8
 
-GroupX E 7
 
