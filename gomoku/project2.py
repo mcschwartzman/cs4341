@@ -3,8 +3,6 @@
 import os
 
 
-
-
 class FakePiece:
     def __init__(self,value,row, column, types,parent):
         self.value = value
@@ -91,16 +89,18 @@ opponentMoves = []
 #global myMoves
 #myMoves = []
 ###Boolean Function to check if My Turn###
-f = open("move_file.txt")
+
 def isMyTurn():
+
+
   global GameBoard
   global matrix
   fileExistsBool = os.path.isfile('./file.txt')
+  f = open("move_file.txt")
 
   if (fileExistsBool):
 
 
-	
 	i=f.read(1)
 	
 	while i != " ":
@@ -131,6 +131,9 @@ def isMyTurn():
 	
 	#newPiece(row,column,"O")
 	opponentMoves.append(GameBoard[int(row)][int(column)])
+
+	f.close()
+	
 def setHeuristic(l):
 	global newList
 	global otherList
@@ -302,6 +305,7 @@ def minimax():
 	global stopper
 	global otherList
 	global end
+	global f
 	final = []	
 	#for i in otherList:
 		#bestList.append(i)
@@ -322,6 +326,9 @@ def minimax():
 			printItOut()	
 		stopper=stopper-1
 def printItOut():
+
+	f = open("move_file.txt", "w+")
+
 	row = final[0].row
 	column = final[0].column
 	
@@ -343,7 +350,11 @@ def printItOut():
 		row = "H"
 	if row == 9:
 		row = "I"
-	print(row,column)		
+	print(row,column)
+
+	f.truncate()
+	f.write("GroupX" +" "+ str(row) + " " + str(column))
+
 def findMin():
 	#print("min")
 	global bestList
@@ -432,3 +443,10 @@ def main():
 
 if __name__ == "__main__":
 	main() 
+
+
+def pruner():
+
+	alpha
+	beta
+

@@ -1,3 +1,1 @@
-GroupX D 8
-
-
+GroupX A 8
