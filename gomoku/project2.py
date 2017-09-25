@@ -2,6 +2,7 @@
 
 import os
 
+
 class FakePiece:
     def __init__(self,value,row, column, types,parent):
         self.value = value
@@ -410,7 +411,7 @@ def minimax():
 	global otherList
 	global end
 	global f
-	final = []
+	final = []	
 	#for i in otherList:
 		#bestList.append(i)
 	setHeuristic(bestList)
@@ -546,14 +547,7 @@ def findMax():
 					stopper = 0
 
 	
-
-def abMAX(board, alpha, beta):
 	
-	if stopper == 0:	#terminal-test
-		return board.value	#return heuristic of board
-
-	v = -10
-
 	
 def main():
 	global myMoves
@@ -566,3 +560,9 @@ def main():
 
 if __name__ == "__main__":
 	main() 
+
+
+def pruner():
+
+	alpha
+	beta
