@@ -1,1 +1,1 @@
-GroupX A 9
+GroupX B 6
