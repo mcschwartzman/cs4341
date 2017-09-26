@@ -428,7 +428,7 @@ def minimax():
 			findMax()
 		else:
 			
-			print(final[0].row,final[0].column)
+			#print(final[0].row,final[0].column)
 			printItOut()	
 		stopper=stopper-1
 def printItOut():
@@ -495,7 +495,13 @@ def findMin():
 		maxList = []
 	for i in bestList:
 		someList.append(i.parent)
-	bestList = set(someList)	
+
+	alphabetaMIN(someList)
+
+	bestList = set(someList)
+
+
+
 	for i in someList:
 		#print(i.row,i.column,i.value)
 		#for j in i.empty:
@@ -511,6 +517,74 @@ def findMin():
 					stopper = 0
 				#break
 
+def alphabetaMIN(parentlist):
+
+	# beta = parentlist[0]
+
+	# print("bout to prune sum parents")
+
+	# for parent in parentlist:
+	# 	if (parent < beta):
+	# 		beta = parent
+	# return beta
+	# print(beta)
+
+	parentlist = sorted(parentlist, key = lambda x: x.value, reverse=True)
+
+def findABMin():
+	#print("min")
+	global bestList
+	global opponentMoves
+	global stopper
+	global final
+	global end
+
+	maxList = []
+	final = []
+	someList = []
+	ultimatelist = []
+	#for i in opponentMoves[0].empty:
+		
+		#i.value = 0	
+
+	print("hellomin")
+
+	for i in bestList:
+
+		print("bout to look at sum kids")
+		#print(i.parent.row,i.parent.column, i.row,i.column,i.value)
+		for y in i.parent.empty:
+			print("looking at kids")
+			maxList.append(y.value)
+		i.parent.value = min(maxList)
+		print("just")
+		maxList = []
+	for i in bestList:
+		print("adding to somelist")
+		someList.append(i.parent)
+
+	#for i in someList:
+	ultimatelist.append(alphabetaMIN(someList))
+
+
+	bestList = set(ultimatelist)
+
+	#from updated best list, look at dem parents, and start with first, do alpha beta stuff
+
+	for i in ultimatelist:
+		#print(i.row,i.column,i.value)
+		#for j in i.empty:
+			#print(j.row,j.column,j.value),
+		#print("MOO")
+		for k in opponentMoves:
+			for y in k.empty:
+				if i.row == y.row and i.column == y.column:
+					#print(i.row,i.column,y.row,y.column,i.value)
+
+				#print("YOU WINNNN")
+					final.append(i)
+					stopper = 0
+				#break
 
 def findMax():
 	#print("max")
@@ -532,7 +606,10 @@ def findMax():
 		maxList = []
 	for i in bestList:
 		someList.append(i.parent)
-	bestList = set(someList)	
+
+	alphabetaMAX(someList)
+
+	bestList = set(someList)
 	for i in someList:
 		#print(i.row,i.column,i.value)
 		#for j in i.empty:
@@ -545,16 +622,60 @@ def findMax():
 					final.append(i)
 					stopper = 0
 
-	
+def alphabetaMAX(parentlist):
 
-def abMAX(board, alpha, beta):
-	
-	if stopper == 0:	#terminal-test
-		return board.value	#return heuristic of board
+	# utlimatelist.append(parentList[0])
+	# alpha = parentlist[0].value
 
-	v = -10
-
+	# # for i in parentlist:
+	# # 	if (i.value > alpha):
+	# # 		alpha = i.value
+	# # 		del ultimatelist[0]
+	# # 		ultimatelist.insert(0,i)
 	
+	# print alpha
+
+	parentlist = sorted(parentlist, key = lambda x: x.value, reverse=False)
+
+def findABMax():
+	#print("max")
+	global stopper
+	global bestList
+	global opponentMoves
+	global final
+	global end
+	#for i in opponentMoves[0].empty:
+		
+		#i.value = 100000	
+	maxList = []
+	someList = []
+	ultimatelist = []
+	print("hello")
+	for i in bestList:
+		#print(i.parent.row,i.parent.column, i.row,i.column,i.value)
+		for y in i.parent.empty:
+			maxList.append(y.value)
+		i.parent.value = max(maxList)
+		maxList = []
+	for i in bestList:
+		someList.append(i.parent)
+
+	#for i in someList:
+	ultimatelist.append(alphabetaMAX(someList))
+
+	bestList = set(ultimatelist)
+	for i in ultimatelist:
+		#print(i.row,i.column,i.value)
+		#for j in i.empty:
+			#print(j.row,j.column,j.value),
+		#print("MOO")
+		for k in opponentMoves:
+			for y in k.empty:
+				if i.row == y.row and i.column == y.column:
+					#print(i.row,i.column,y.row,y.column,i.value)
+					final.append(i)
+					stopper = 0
+
 def main():
 	global myMoves
 	

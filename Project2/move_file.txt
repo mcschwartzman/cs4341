@@ -1,1 +1,1 @@
-GroupX B 6
+GroupX C 5
