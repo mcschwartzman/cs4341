@@ -93,6 +93,17 @@ def playGame():
 	global opponentMoves
 	fileExistsBool = os.path.isfile('./file.txt')
 	f = open("move_file.txt")
+
+	if (os.path.isfile('./history.txt')) == False:
+		recordFile = open('./history.txt', 'w+')
+		print("just created the file i think?")
+	else:
+		print("didnt create i think")
+		
+	#else:
+		#recordFile = open('./history.txt', 'w')
+		#recordFile.write("\n")
+
 	if (fileExistsBool):	
 		if f.read(1) == "":
 			f.close()
@@ -104,9 +115,17 @@ def playGame():
 	
 			opponentMoves.append(GameBoard[5][7])
 
-		
+			#print(GameBoard[5][7])
+
+			#recordFile.write("\n")
+			recordFile.write("5" + " " + "7" + " " + "O" + "\n")
+			recordFile.write("\n")
+			#recordFile.close()
+
 		else:
 			isMyTurn()
+
+
 		
 def isMyTurn():
 	global opponentMoves
@@ -114,6 +133,7 @@ def isMyTurn():
 	global GameBoard
 	global matrix
 	f = open("move_file.txt")
+	recordFile = open("history.txt", "a")
 
 	i=f.read(1)
 	
@@ -150,6 +170,10 @@ def isMyTurn():
 	#newPiece(row,column,"O")
 	opponentMoves.append(GameBoard[int(row)][int(column)])
 
+	#recordFile.write("\n")
+	#recordFile.write(str(row) + " " + str(column) + " " + "O")
+	#recordFile.write("\n")
+	#recordFile.close()
 	f.close()
 	makeTree()
 def setHeuristic(l):
@@ -434,6 +458,8 @@ def minimax():
 def printItOut():
 
 	f = open("move_file.txt", "w+")
+	recordFile = open("history.txt", "a")
+	
 
 	row = final[0].row
 	column = final[0].column
@@ -470,7 +496,13 @@ def printItOut():
 		row = "O"
 	
 	print(row,column)
+	#recordFile.write("YIKES")
 
+	recordFile.write(str(opponentMoves[0].row) + " " + str(opponentMoves[0].column) + " " + "O")
+	recordFile.write("\n")
+	recordFile.write(str(row) + " " + str(column) + " " + "Y")
+	recordFile.write("\n")
+	recordFile.close()
 	f.truncate()
 	f.write("GroupX" +" "+ str(row) + " " + str(column))
 
