@@ -91,18 +91,18 @@ opponentMoves = []
 def playGame():
 	global GameBoard
 	global opponentMoves
-	fileExistsBool = os.path.isfile('./file.txt')
+	fileExistsBool = os.path.isfile('./GroupX.go')
 	f = open("move_file.txt")
 
 	if (os.path.isfile('./history.txt')) == False:
 		recordFile = open('./history.txt', 'w+')
-		print("just created the file i think?")
-	else:
-		print("didnt create i think")
+		#print("just created the file i think?")
+	#else:
+		#print("didnt create i think")
 		
 	#else:
 		#recordFile = open('./history.txt', 'w')
-		#recordFile.write("\n")
+		recordFile.write("\n")
 
 	if (fileExistsBool):	
 		if f.read(1) == "":
@@ -116,10 +116,11 @@ def playGame():
 			opponentMoves.append(GameBoard[5][7])
 
 			#print(GameBoard[5][7])
+			recordFile = open('./history.txt', 'a')
 
 			#recordFile.write("\n")
 			recordFile.write("5" + " " + "7" + " " + "O" + "\n")
-			recordFile.write("\n")
+			#recordFile.write("\n")
 			#recordFile.close()
 
 		else:
@@ -133,7 +134,7 @@ def isMyTurn():
 	global GameBoard
 	global matrix
 	f = open("move_file.txt")
-	recordFile = open("history.txt", "a")
+	recordFile = open("history.txt", "r")
 
 	i=f.read(1)
 	
@@ -174,7 +175,30 @@ def isMyTurn():
 	#recordFile.write(str(row) + " " + str(column) + " " + "O")
 	#recordFile.write("\n")
 	#recordFile.close()
+	stop = 0
+	while stop == 0:
+
+		r = recordFile.read(1)
+		if r == "":
+			stop = 2
+			break
+		recordFile.read(1)
+		print(r),
+		c = recordFile.read(1)
+		recordFile.read(1)
+
+		print(c),
+		t = recordFile.read(1)
+		print(t)
+		recordFile.readline(1)
+
+		GameBoard[int(r)][int(c)] = GamePiece(0,r,c,str(t),None)
+		print(GameBoard[int(r)][int(c)])
+		opponentMoves.append(GameBoard[int(row)][int(column)])
+
+
 	f.close()
+	recordFile.close()
 	makeTree()
 def setHeuristic(l):
 	global newList
@@ -324,7 +348,7 @@ def checkEmpty(l,l2):
 				
 				
 				
-		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14:								
+		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14 and GameBoard[int(i.row)][int(i.column)].column != 0 and GameBoard[int(i.row)][int(i.column)].row != 14:							
 			if GameBoard[int(i.row)-1][int(i.column)-1].types == "E":
 				l2.append(GameBoard[int(i.row)-1][int(i.column)-1])
 				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
@@ -333,7 +357,7 @@ def checkEmpty(l,l2):
 
 				#print("LEFTDOWN")
 				#print(GameBoard[int(i.row)][int(i.column)-1].row,GameBoard[int(i.row)][int(i.column)-1].column)
-		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14:								
+		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14 and GameBoard[int(i.row)][int(i.column)].column != 0 and GameBoard[int(i.row)][int(i.column)].row != 14:							
 			if GameBoard[int(i.row)+1][int(i.column)-1].types == "E":
 				l2.append(GameBoard[int(i.row)+1][int(i.column)-1])
 				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
@@ -342,14 +366,14 @@ def checkEmpty(l,l2):
 
 				#print("LEFTUP")
 				#print(GameBoard[int(i.row)][int(i.column)-1].row,GameBoard[int(i.row)][int(i.column)-1].column)		
-		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14:								
+		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14 and GameBoard[int(i.row)][int(i.column)].column != 0 and GameBoard[int(i.row)][int(i.column)].row != 14:							
 			if GameBoard[int(i.row)+1][int(i.column)+1].types == "E":
 				l2.append(GameBoard[int(i.row)+1][int(i.column)+1])
 				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
 				GameBoard[int(i.row)+1][int(i.column)+1].parent = GameBoard[int(i.row)][int(i.column)]
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)+1][int(i.column)+1])	
 				#print("RIGHTUP")	
-		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14:								
+		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14 and GameBoard[int(i.row)][int(i.column)].column != 0 and GameBoard[int(i.row)][int(i.column)].row != 14:							
 			if GameBoard[int(i.row)-1][int(i.column)+1].types == "E":
 				l2.append(GameBoard[int(i.row)-1][int(i.column)+1])
 				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
@@ -390,35 +414,13 @@ def makeTree():
 	for i in newList:
 		i.types = "E"
 	fakeList = []
-	e= 0
-	while e < 1:
-		#setHeuristic(newList)
 
-		#for i in newList:
-			#if i.value >= 1000000:
-				#otherList.append(i)
-				#newList.remove(i)
-			#if not newList:
-				#e = 1
-		checkEmpty(newList,fakeList)
-		for i in fakeList:
-			i.types = "E"
-		bestList = fakeList
-		newList =[]
-		#setHeuristic(fakeList)
-		#for i in fakeList:
-			#if i.value >= 1000000:
-				#otherList.append(i)
-				#fakeList.remove(i)
+	for i in newList:
+		i.types = "E"
+
+
+	bestList = newList
 	
-			#if not fakeList:
-				#e=1
-		checkEmpty(fakeList,newList)
-		for i in newList:
-			i.types = "E"
-		bestList = newList
-		fakeList = []
-		e = e+1
 	minimax()
 global final 
 final = []
@@ -458,12 +460,15 @@ def minimax():
 def printItOut():
 
 	f = open("move_file.txt", "w+")
-	recordFile = open("history.txt", "a")
-	
 
 	row = final[0].row
 	column = final[0].column
-	
+	recordFile = open("history.txt", "a")
+	recordFile.write(str(row) + " " + str(column) + " " + "Y")
+	recordFile.write("\n")
+
+	recordFile.write(str(opponentMoves[0].row) + " " + str(opponentMoves[0].column) + " " + "O")
+	recordFile.write("\n")
 	if row == 0:
 		row = "A"
 	if row == 1:
@@ -498,10 +503,7 @@ def printItOut():
 	print(row,column)
 	#recordFile.write("YIKES")
 
-	recordFile.write(str(opponentMoves[0].row) + " " + str(opponentMoves[0].column) + " " + "O")
-	recordFile.write("\n")
-	recordFile.write(str(row) + " " + str(column) + " " + "Y")
-	recordFile.write("\n")
+	
 	recordFile.close()
 	f.truncate()
 	f.write("GroupX" +" "+ str(row) + " " + str(column))
