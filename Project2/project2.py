@@ -2,21 +2,7 @@
 
 import os
 
-class FakePiece:
-    def __init__(self,value,row, column, types,parent):
-        self.value = value
-        self.types= types    # an int
-        self.full = []
-        self.empty = []
-        self.parent =parent    # a list of nodes
-        self.row = row
-        self.column  = column
-
-    def addFull(self, childNode):
-		self.full.append(childNode)	
-
-    def addEmpty(self, childNode):
-		self.empty.append(childNode)		
+		
 
 class GamePiece:
     def __init__(self,value,row, column, types,parent):
@@ -27,6 +13,7 @@ class GamePiece:
         self.empty = []     # a list of nodes
         self.row = row
         self.column  = column
+
 
     def addFull(self, childNode):
 		self.full.append(childNode)	
@@ -50,84 +37,61 @@ class path:
 		self.pathQ.insert(0,nodes)
 
 		
-#game board 15x15 array#
 global fakeList
 fakeList = []
 global GameBoard
-#GameBoard = np.zeros([15,15], dtype = object)
 GameBoard = []                                                        
 for i in range (0, 15):                               
     new = []                 
     for j in range (0, 15):          
         new.append(GamePiece(0,i,j,"E",None))             
     GameBoard.append(new)
-#print(GameBoard)
-#for i in GameBoard:
-	#if i.all() == 0:
-		#i = GamePiece(0,i.rows,i.column,"E",None)
-#rows = 15
-#columns = 15
+global turn
+turn = 1
 
 
-#while length < 15:
-	#gameColumn.append(GamePiece(0,length,0,"E",None))
-	#length = length +1
-#GameBoard = []
-#length = 0
-#while length < 15:
-	#for i in gameColumn:
-		#i.column = length
-	#GameBoard.append(gameColumn)
-	#length = length +1
-#print(matrix)
 
-    #print(end="\n")
     
 global opponentMoves
 opponentMoves = []
-#global myMoves
-#myMoves = []
-###Boolean Function to check if My Turn###
+
 def playGame():
 	global GameBoard
 	global opponentMoves
+	
+	global turn
 	fileExistsBool = os.path.isfile('./GroupX.go')
-	f = open("move_file.txt")
+	if os.path.isfile('./history.txt') == False:
 
-	if (os.path.isfile('./history.txt')) == False:
 		recordFile = open('./history.txt', 'w+')
-		#print("just created the file i think?")
-	#else:
-		#print("didnt create i think")
-		
-	#else:
-		#recordFile = open('./history.txt', 'w')
-		recordFile.write("\n")
+
 
 	if (fileExistsBool):	
-		if f.read(1) == "":
-			f.close()
+		f = open("move_file.txt","r")
+
+
+		recordFile = open('./history.txt', 'a')
+
+
+		if os.path.getsize('./move_file.txt') != 0:
+			isMyTurn()
+		else:
+			
 			f = open("move_file.txt","w")
 
 			f.write("GroupX" +" "+ "F" + " " + "7")
 			print("'F' , 7")
-			GameBoard[5][7] = GamePiece(0,5,7,"O",None)
+			GameBoard[5][7] = GamePiece(0,5,7,"Y",None)
 	
 			opponentMoves.append(GameBoard[5][7])
 
-			#print(GameBoard[5][7])
 			recordFile = open('./history.txt', 'a')
 
-			#recordFile.write("\n")
-			recordFile.write("5" + " " + "7" + " " + "O" + "\n")
-			#recordFile.write("\n")
-			#recordFile.close()
+			
+			recordFile.write("5" + " " + "7" + " " + "Y" + "\n")
+			
+	
 
-		else:
-			isMyTurn()
-
-
-		
 def isMyTurn():
 	global opponentMoves
 	
@@ -142,39 +106,48 @@ def isMyTurn():
 		i=f.read(1)
 		
 	row = f.read(1)
-	if row == "A":
+	if row == "A" or row == "a":
 		row = 0
-	if row == "B":
+	if row == "B" or row == "b":
 		row = 1
-	if row == "C":
+	if row == "C" or row == "c":
 		row = 2
-	if row == "D":
+	if row == "D" or row == "d":
 		row = 3
-	if row == "E":
+	if row == "E" or row == "e":
 		row = 4	
-	if row == "F":
+	if row == "F" or row == "f":
 		row = 5
-	if row == "G":
+	if row == "G" or row == "g":
 		row = 6	
+	if row == "H" or row == "h":
+		row = 7
+	if row == "I" or row == "i":
+		row = 8
+	if row == "J" or row == "j":
+		row = 9
+	if row == "K" or row == "k":
+		row = 10
+	if row == "L" or row == "l":
+		row = 11
+	if row == "M" or row == "m":
+		row = 12
+	if row == "N" or row == "n":
+		row = 13
+	if row == "O" or row == "o":
+		row = 14
+	
 	f.read(1)
-	column = f.read(1)
+	column = f.read(2)
 	
-	
-	#GameBoard[row][column] = GamePiece(0,row,column,"O")
-	#print(GameBoard)
-	#print(row,column)
+
 	f.readline(1)
 	f.readline(1)
 	GameBoard[int(row)][int(column)] = GamePiece(0,row,column,"O",None)
-	##adds new piece to gameboard####
 	
-	#newPiece(row,column,"O")
 	opponentMoves.append(GameBoard[int(row)][int(column)])
 
-	#recordFile.write("\n")
-	#recordFile.write(str(row) + " " + str(column) + " " + "O")
-	#recordFile.write("\n")
-	#recordFile.close()
+
 	stop = 0
 	while stop == 0:
 
@@ -183,17 +156,16 @@ def isMyTurn():
 			stop = 2
 			break
 		recordFile.read(1)
-		print(r),
-		c = recordFile.read(1)
+	#	print(r),
+		c = recordFile.read(2)
 		recordFile.read(1)
 
-		print(c),
+	#	print(c),
 		t = recordFile.read(1)
-		print(t)
+		#print(t)
 		recordFile.readline(1)
 
-		GameBoard[int(r)][int(c)] = GamePiece(0,r,c,str(t),None)
-		print(GameBoard[int(r)][int(c)])
+		GameBoard[int(r)][int(c)] = GamePiece(0,int(r),int(c),str(t),None)
 		opponentMoves.append(GameBoard[int(row)][int(column)])
 
 
@@ -218,10 +190,7 @@ def setHeuristic(l):
 					if i.parent.parent.parent.row == i.parent.parent.parent.parent.row:
 						#print("FIVE")
 						i.value = i.value+100
-						#l.remove(i)
-						#print(i.row,i.column,i.value)
-						#otherList.append(i)
-		#print(i.row,i.column,i.parent)
+
 	
 	for i in l:
 		if i.column == i.parent.column:
@@ -295,7 +264,6 @@ def setHeuristic(l):
 					if i.parent.parent.parent.column-1 == i.parent.parent.parent.parent.column and i.parent.parent.parent.row-1 == i.parent.parent.parent.parent.row:
 						#print("FIVE")
 						i.value =i.value + 100	
-		#print(i.row,i.column,i.parent)
 global swithedList
 switchedList = []	
 def checkEmpty(l,l2):
@@ -305,82 +273,57 @@ def checkEmpty(l,l2):
 	global opponentMoves
 	
 	for i in l:
-		#print("___")
-		#print(GameBoard[int(i.row)][int(i.column)].row ,GameBoard[int(i.row)][int(i.column)].column,GameBoard[int(i.row)][int(i.column)].value)
 
 			
 		if GameBoard[int(i.row)][int(i.column)].row != 14 :
 			if GameBoard[int(i.row)+1][int(i.column)].types == "E":
-				#print("Right")
-				#print(GameBoard[int(i.row)+1][int(i.column)].row,GameBoard[int(i.row)+1][int(i.column)].column)
 				GameBoard[int(i.row)+1][int(i.column)].parent = GameBoard[int(i.row)][int(i.column)]
-				#GameBoard[int(i.row)+1][int(i.column)].types = "F"
 				l2.append(GameBoard[int(i.row)+1][int(i.column)])
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)+1][int(i.column)])		
 
 		if GameBoard[int(i.row)][int(i.column)].column != 14:					
 			if GameBoard[int(i.row)][int(i.column)+1].types == "E":
-				#print("UP")
-				#print(GameBoard[int(i.row)][int(i.column)+1].row,GameBoard[int(i.row)][int(i.column)+1].column)
 				GameBoard[int(i.row)][int(i.column)+1].parent = GameBoard[int(i.row)][int(i.column)]
-				#GameBoard[int(i.row)][int(i.column)+1].types = "F"
 				l2.append(GameBoard[int(i.row)][int(i.column)+1])
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)][int(i.column)+1])		
 	
 				
 		if GameBoard[int(i.row)][int(i.column)].row != 0 :	
 			if GameBoard[int(i.row)-1][int(i.column)].types == "E":
-				#print("LEFT")
-				#print(GameBoard[int(i.row)-1][int(i.column)].row,GameBoard[int(i.row)-1][int(i.column)].column)
 				GameBoard[int(i.row)-1][int(i.column)].parent = GameBoard[int(i.row)][int(i.column)]
-				#GameBoard[int(i.row)-1][int(i.column)].types = "F"
 				l2.append(GameBoard[int(i.row)-1][int(i.column)])
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)-1][int(i.column)])		
 						
 		if GameBoard[int(i.row)][int(i.column)].row != 0 :								
 			if GameBoard[int(i.row)][int(i.column)-1].types == "E":
 				l2.append(GameBoard[int(i.row)][int(i.column)-1])
-				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
 				GameBoard[int(i.row)][int(i.column)-1].parent = GameBoard[int(i.row)][int(i.column)]
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)][int(i.column)-1])		
-				#print("DOWN")
-				#print(GameBoard[int(i.row)][int(i.column)-1].row,GameBoard[int(i.row)][int(i.column)-1].column)
 				
 				
 				
 		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14 and GameBoard[int(i.row)][int(i.column)].column != 0 and GameBoard[int(i.row)][int(i.column)].row != 14:							
 			if GameBoard[int(i.row)-1][int(i.column)-1].types == "E":
 				l2.append(GameBoard[int(i.row)-1][int(i.column)-1])
-				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
 				GameBoard[int(i.row)-1][int(i.column)-1].parent = GameBoard[int(i.row)][int(i.column)]
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)-1][int(i.column)-1])		
 
-				#print("LEFTDOWN")
-				#print(GameBoard[int(i.row)][int(i.column)-1].row,GameBoard[int(i.row)][int(i.column)-1].column)
 		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14 and GameBoard[int(i.row)][int(i.column)].column != 0 and GameBoard[int(i.row)][int(i.column)].row != 14:							
 			if GameBoard[int(i.row)+1][int(i.column)-1].types == "E":
 				l2.append(GameBoard[int(i.row)+1][int(i.column)-1])
-				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
 				GameBoard[int(i.row)+1][int(i.column)-1].parent = GameBoard[int(i.row)][int(i.column)]
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)+1][int(i.column)-1])		
-
-				#print("LEFTUP")
-				#print(GameBoard[int(i.row)][int(i.column)-1].row,GameBoard[int(i.row)][int(i.column)-1].column)		
 		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14 and GameBoard[int(i.row)][int(i.column)].column != 0 and GameBoard[int(i.row)][int(i.column)].row != 14:							
 			if GameBoard[int(i.row)+1][int(i.column)+1].types == "E":
 				l2.append(GameBoard[int(i.row)+1][int(i.column)+1])
-				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
 				GameBoard[int(i.row)+1][int(i.column)+1].parent = GameBoard[int(i.row)][int(i.column)]
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)+1][int(i.column)+1])	
-				#print("RIGHTUP")	
 		if GameBoard[int(i.row)][int(i.column)].row != 0 and GameBoard[int(i.row)][int(i.column)].column != 14 and GameBoard[int(i.row)][int(i.column)].column != 0 and GameBoard[int(i.row)][int(i.column)].row != 14:							
 			if GameBoard[int(i.row)-1][int(i.column)+1].types == "E":
 				l2.append(GameBoard[int(i.row)-1][int(i.column)+1])
-				#GameBoard[int(i.row)][int(i.column)-1].types = "F"	
 				GameBoard[int(i.row)-1][int(i.column)+1].parent = GameBoard[int(i.row)][int(i.column)]
 				GameBoard[int(i.row)][int(i.column)].addEmpty(GameBoard[int(i.row)-1][int(i.column)+1])	
-				#print("RIGHTDOWN")
-				#print(GameBoard[int(i.row)][int(i.column)-1].row,GameBoard[int(i.row)][int(i.column)-1].column)
+
 global newList
 newList = []	
 global otherList
@@ -389,17 +332,19 @@ global bestList
 bestList = []
 global e
 e = 0
+global types
+types = "Y"
 global listType
 listType = ""	
 def makeTree():
 	global opponentMoves
 	global fakeList
 	global e
+	global types
 	global newList
 	global bestList
 	global otherList
 	checkEmpty(opponentMoves,fakeList)
-	#print("FAKELIST")
 	newList = []
 	otherList = []
 	checkEmpty(fakeList, newList)
@@ -409,14 +354,17 @@ def makeTree():
 	checkEmpty(newList,fakeList)
 	for i in fakeList:
 		i.types = "E"
+
 	newList = []
 	checkEmpty(fakeList,newList)
 	for i in newList:
 		i.types = "E"
+
 	fakeList = []
 
 	for i in newList:
 		i.types = "E"
+
 
 
 	bestList = newList
@@ -435,40 +383,31 @@ def minimax():
 	global stopper
 	global otherList
 	global end
+	global types
+
 	global f
 	final = []
-	#for i in otherList:
-		#bestList.append(i)
 	setHeuristic(bestList)
 	for i in bestList:
 		i.value = i.value +abs(int(i.row) - int(opponentMoves[0].row))  + abs(int(i.column) - int(opponentMoves[0].column)) 
 
-		#print(i.row,i.column,i.value)
 	bestList = sorted(bestList, key = lambda x: x.parent.row, reverse=False	)
 	bestList = sorted(bestList, key = lambda x: x.parent.column, reverse=False	)
 
-	while stopper > 0:
-		if stopper != 0:
-			findMin()		
-		if stopper !=0:
-			findMax()
-		else:
-			
-			#print(final[0].row,final[0].column)
-			printItOut()	
-		stopper=stopper-1
+	findMinimax()		
+	if stopper == 0:
+		printItOut()
+	
 def printItOut():
 
 	f = open("move_file.txt", "w+")
-
 	row = final[0].row
 	column = final[0].column
 	recordFile = open("history.txt", "a")
+
 	recordFile.write(str(row) + " " + str(column) + " " + "Y")
 	recordFile.write("\n")
 
-	recordFile.write(str(opponentMoves[0].row) + " " + str(opponentMoves[0].column) + " " + "O")
-	recordFile.write("\n")
 	if row == 0:
 		row = "A"
 	if row == 1:
@@ -501,214 +440,82 @@ def printItOut():
 		row = "O"
 	
 	print(row,column)
-	#recordFile.write("YIKES")
 
 	
 	recordFile.close()
 	f.truncate()
 	f.write("GroupX" +" "+ str(row) + " " + str(column))
 
-def findMin():
-	#print("min")
+def findMinimax():
 	global bestList
 	global opponentMoves
 	global stopper
+	global types
+
 	global final
 	global end
 	maxList = []
 	final = []
 	someList = []
-	#for i in opponentMoves[0].empty:
 		
-		#i.value = 0	
 	for i in bestList:
-		#print(i.parent.row,i.parent.column, i.row,i.column,i.value)
 		for y in i.parent.empty:
 			maxList.append(y.value)
-		i.parent.value = min(maxList)
+		if types == "O":
+			i.parent.value = min(maxList)
+			#print(types)
+			types = "Y"
+		else:
+			i.parent.value = max(maxList)
+			#print(types)
+			types = "O"
+
 		maxList = []
 	for i in bestList:
 		someList.append(i.parent)
 
-	alphabetaMIN(someList)
+	prune(someList)
 
 	bestList = set(someList)
 
 
 
 	for i in someList:
-		#print(i.row,i.column,i.value)
-		#for j in i.empty:
-			#print(j.row,j.column,j.value),
-		#print("MOO")
+
 		for k in opponentMoves:
 			for y in k.empty:
 				if i.row == y.row and i.column == y.column:
-					#print(i.row,i.column,y.row,y.column,i.value)
+					if i not in final and len(final) < 4:
+						final.append(i)
+						#print(i.row,i.column)
+					else:
+						if types == "Y":
+							final = sorted(final, key = lambda x: x.value, reverse=True)
 
-				#print("YOU WINNNN")
-					final.append(i)
-					stopper = 0
-				#break
+						else:
+							final = sorted(final, key = lambda x: x.value, reverse=False)
 
-def alphabetaMIN(parentlist):
-
-	# beta = parentlist[0]
-
-	# print("bout to prune sum parents")
-
-	# for parent in parentlist:
-	# 	if (parent < beta):
-	# 		beta = parent
-	# return beta
-	# print(beta)
-
-	parentlist = sorted(parentlist, key = lambda x: x.value, reverse=True)
-
-def findABMin():
-	#print("min")
-	global bestList
-	global opponentMoves
-	global stopper
-	global final
-	global end
-
-	maxList = []
-	final = []
-	someList = []
-	ultimatelist = []
-	#for i in opponentMoves[0].empty:
-		
-		#i.value = 0	
-
-	print("hellomin")
-
-	for i in bestList:
-
-		print("bout to look at sum kids")
-		#print(i.parent.row,i.parent.column, i.row,i.column,i.value)
-		for y in i.parent.empty:
-			print("looking at kids")
-			maxList.append(y.value)
-		i.parent.value = min(maxList)
-		print("just")
-		maxList = []
-	for i in bestList:
-		print("adding to somelist")
-		someList.append(i.parent)
-
-	#for i in someList:
-	ultimatelist.append(alphabetaMIN(someList))
+						stopper = 0
+						#print("STOP")
 
 
-	bestList = set(ultimatelist)
+					
+	#look how recursive it is
+	if stopper != 0:
+		findMinimax()
 
-	#from updated best list, look at dem parents, and start with first, do alpha beta stuff
+def prune(parentlist):
+	global types
 
-	for i in ultimatelist:
-		#print(i.row,i.column,i.value)
-		#for j in i.empty:
-			#print(j.row,j.column,j.value),
-		#print("MOO")
-		for k in opponentMoves:
-			for y in k.empty:
-				if i.row == y.row and i.column == y.column:
-					#print(i.row,i.column,y.row,y.column,i.value)
-
-				#print("YOU WINNNN")
-					final.append(i)
-					stopper = 0
-				#break
-
-def findMax():
-	#print("max")
-	global stopper
-	global bestList
-	global opponentMoves
-	global final
-	global end
-	#for i in opponentMoves[0].empty:
-		
-		#i.value = 100000	
-	maxList = []
-	someList = []
-	for i in bestList:
-		#print(i.parent.row,i.parent.column, i.row,i.column,i.value)
-		for y in i.parent.empty:
-			maxList.append(y.value)
-		i.parent.value = max(maxList)
-		maxList = []
-	for i in bestList:
-		someList.append(i.parent)
-
-	alphabetaMAX(someList)
-
-	bestList = set(someList)
-	for i in someList:
-		#print(i.row,i.column,i.value)
-		#for j in i.empty:
-			#print(j.row,j.column,j.value),
-		#print("MOO")
-		for k in opponentMoves:
-			for y in k.empty:
-				if i.row == y.row and i.column == y.column:
-					#print(i.row,i.column,y.row,y.column,i.value)
-					final.append(i)
-					stopper = 0
-
-def alphabetaMAX(parentlist):
-
-	# utlimatelist.append(parentList[0])
-	# alpha = parentlist[0].value
-
-	# # for i in parentlist:
-	# # 	if (i.value > alpha):
-	# # 		alpha = i.value
-	# # 		del ultimatelist[0]
-	# # 		ultimatelist.insert(0,i)
-	
-	# print alpha
-
-	parentlist = sorted(parentlist, key = lambda x: x.value, reverse=False)
-
-def findABMax():
-	#print("max")
-	global stopper
-	global bestList
-	global opponentMoves
-	global final
-	global end
-	#for i in opponentMoves[0].empty:
-		
-		#i.value = 100000	
-	maxList = []
-	someList = []
-	ultimatelist = []
-	print("hello")
-	for i in bestList:
-		#print(i.parent.row,i.parent.column, i.row,i.column,i.value)
-		for y in i.parent.empty:
-			maxList.append(y.value)
-		i.parent.value = max(maxList)
-		maxList = []
-	for i in bestList:
-		someList.append(i.parent)
-
-	#for i in someList:
-	ultimatelist.append(alphabetaMAX(someList))
-
-	bestList = set(ultimatelist)
-	for i in ultimatelist:
-		#print(i.row,i.column,i.value)
-		#for j in i.empty:
-			#print(j.row,j.column,j.value),
-		#print("MOO")
-		for k in opponentMoves:
-			for y in k.empty:
-				if i.row == y.row and i.column == y.column:
-					#print(i.row,i.column,y.row,y.column,i.value)
-					final.append(i)
-					stopper = 0
+	#this is where intermediate nodes are checked
+	setHeuristic(parentlist)
+	if types == "Y":
+		parentlist = sorted(parentlist, key = lambda x: x.value, reverse=True)
+	else:
+		parentlist = sorted(parentlist, key = lambda x: x.value, reverse=False)
+	#this is where pruning happens
+	while len(parentlist) > 4:
+		del parentlist[len(parentlist)-1]
 
 def main():
 	global myMoves
