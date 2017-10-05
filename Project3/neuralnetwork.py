@@ -9,14 +9,26 @@ import numpy
 class zero:
 	def __init__(self, label, image):
 		self.label = label
-		self.image = image # use function to find image per label?
+		self.image = image # use function to find image per label
+
+	arrayPlace = 0 
+
+	# def attachIm(label):
+	# 	for n in labelarray:
+	# 		if (n == 0):
+	# 			self.image = 
 
 ##... use different class for each number ...##
 
 
 
 
+
+
 labelarray = numpy.load('labels.npy')
+dataarray = numpy.load('images.npy')
+
+(x_train, y_train) = dataarray
 
 ######=========== Read data into chunks for validation, test, and train ========########
 
