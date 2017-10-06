@@ -145,15 +145,13 @@ y_val = np.array(validation2)
 
 ######Make Model##############
 model = Sequential() # declare model
-model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='he_normal')) # first layer
+model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='random_normal')) # first layer
 model.add(Activation('relu'))
 
+model.add(Dense(2, activation='relu', input_dim=28))
 
-model.add(Dense(12, input_dim=8, activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
 
-model.add(Dense(10, kernel_initializer='he_normal')) # last layer
+model.add(Dense(10, kernel_initializer='random_normal')) # last layer
 model.add(Activation('softmax'))
 
 
