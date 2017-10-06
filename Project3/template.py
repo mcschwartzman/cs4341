@@ -9,6 +9,12 @@ from keras.utils import np_utils
 # Model Template
 import random
 import PIL
+import csv
+
+
+# with open('eggs.csv', 'wb') as csvfile:
+#    	accwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+#     accwriter.writerow([epoch])
 
 from PIL import Image
 from random import shuffle	
@@ -183,7 +189,9 @@ history = model.fit(x_train, y_train,
 
 # Report Results
 
-	
+recordFile = open('./history.txt', 'w+')
+recordFile.write(str(history.history))
+
 print(history.history)
 
 prediction = model.predict(np.array(test))
