@@ -82,8 +82,10 @@ x_val = np.array(validation)
 img = Image.fromarray(x_val[1].reshape(28,28), 'L')
 img.save('my.png')
 
+test2 = []
 
-placeHolder2 = []
+	
+
 ##do the same thing for labels
 one = []
 two = []
@@ -98,7 +100,7 @@ ten = []
 
 training = []
 validation  = []
-test = []
+test8 = []
 x = 0
 for i in labels:
 	a = keras.utils.np_utils.to_categorical(i,10)
@@ -138,7 +140,7 @@ for i in numbers:
 
 	#165 in test
 		if x >= 488 and x < 650:
-			test.append(i[x])
+			test8.append(i[x])
 		x =x+1
 training2 = []
 for i in training:
@@ -151,7 +153,8 @@ for i in validation:
 	validation2.append(i[0])
 y_val = np.array(validation2)
 
-print(y_val[1])
+
+
 ######Make Model##############
 model = Sequential() # declare model
 model.add(Dense(500, input_shape=(28*28, ), kernel_initializer='he_uniform')) # first layer
@@ -174,7 +177,7 @@ model.compile(optimizer='sgd',
 # Train Model
 history = model.fit(x_train, y_train, 
                     validation_data = (x_val, y_val), 
-                    epochs=500, 
+                    epochs=50, 
                     batch_size=180)
 
 
@@ -182,8 +185,7 @@ history = model.fit(x_train, y_train,
 
 	
 print(history.history)
-test2 = []
-for i in test:
-	test2.append(test[0])
-prediction = model.predict(x_val)
-print(prediction)
+
+prediction = model.predict(np.array(test))
+for i in prediction:
+	print(i)
