@@ -8,6 +8,9 @@ import numpy as np
 from keras.utils import np_utils
 # Model Template
 import random
+import PIL
+
+from PIL import Image
 from random import shuffle	
 #############Pre-processing data##########
 images = np.load('images.npy')
@@ -56,7 +59,7 @@ while x < 6500:
 	x = x+1
 numbers = [one,two,three,four,five,six,seven,eight,nine,ten]
 for i in numbers:
-	random.shuffle(i)
+	#random.shuffle(i)
 	x = 0
 	while x < 650:
 	#390 in training
@@ -75,6 +78,9 @@ for i in numbers:
 x_train = np.array(training)
 x_val = np.array(validation)
 
+
+img = Image.fromarray(x_val[1].reshape(28,28), 'L')
+img.save('my.png')
 
 
 placeHolder2 = []
@@ -120,7 +126,7 @@ for i in labels:
 	x = x+1
 numbers = [one,two,three,four,five,six,seven,eight,nine,ten]
 for i in numbers:
-	random.shuffle(i)
+	#random.shuffle(i)
 	x = 0
 	while x < 650:
 	#390 in training
@@ -139,19 +145,24 @@ for i in training:
 	training2.append(i[0])
 y_train = np.array(training2)
 validation2 = []
+
 for i in validation:
+
 	validation2.append(i[0])
 y_val = np.array(validation2)
 
+print(y_val[1])
 ######Make Model##############
 model = Sequential() # declare model
-model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='random_normal')) # first layer
-model.add(Activation('relu'))
+model.add(Dense(500, input_shape=(28*28, ), kernel_initializer='he_uniform')) # first layer
+model.add(Activation('tanh'))
 
-model.add(Dense(2, activation='relu', input_dim=28))
+model.add(Dense(250))
+model.add(Activation('tanh'))
 
 
-model.add(Dense(10, kernel_initializer='random_normal')) # last layer
+
+model.add(Dense(10, kernel_initializer='he_uniform')) # last layer
 model.add(Activation('softmax'))
 
 
@@ -163,12 +174,13 @@ model.compile(optimizer='sgd',
 # Train Model
 history = model.fit(x_train, y_train, 
                     validation_data = (x_val, y_val), 
-                    epochs=10, 
-                    batch_size=512)
+                    epochs=500, 
+                    batch_size=180)
 
 
 # Report Results
 
+	
 print(history.history)
 test2 = []
 for i in test:
