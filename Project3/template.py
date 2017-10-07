@@ -11,6 +11,10 @@ import random
 import PIL
 import csv
 
+global switch
+
+switch = 0
+
 
 # with open('eggs.csv', 'wb') as csvfile:
 #    	accwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -195,5 +199,16 @@ recordFile.write(str(history.history))
 print(history.history)
 
 prediction = model.predict(np.array(test))
-for i in prediction:
-	print(i)
+
+
+
+
+for n in prediction:
+	print(n)
+	switch = 1
+
+testValues = open('./valuetest.txt', 'w+')
+testValues.write(str(prediction))
+
+testLabels = open('./labeltest.txt', 'w+')
+testLabels.write(str(test8))
