@@ -60,14 +60,14 @@ def playGame():
 	global opponentMoves
 	
 	global turn
-	fileExistsBool = os.path.isfile('./GroupX.go')
+	fileExistsBool = os.path.isfile('./groupX.go')
 	if os.path.isfile('./history.txt') == False:
 
 		recordFile = open('./history.txt', 'w+')
 
 
 	if (fileExistsBool):	
-		f = open("move_file.txt","r")
+		f = open("move_file","r")
 
 
 		recordFile = open('./history.txt', 'a')
@@ -97,7 +97,7 @@ def isMyTurn():
 	
 	global GameBoard
 	global matrix
-	f = open("move_file.txt")
+	f = open("move_file")
 	recordFile = open("history.txt", "r")
 
 	i=f.read(1)
@@ -401,7 +401,7 @@ def minimax():
 	
 def printItOut():
 
-	f = open("move_file.txt", "w+")
+	f = open("move_file", "w")
 	row = final[0].row
 	column = final[0].column
 	recordFile = open("history.txt", "a")
