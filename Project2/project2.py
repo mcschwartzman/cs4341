@@ -156,13 +156,14 @@ def isMyTurn():
 			stop = 2
 			break
 		recordFile.read(1)
-	#	print(r),
+		print(r),
 		c = recordFile.read(2)
-		recordFile.read(1)
+		if int(c) >= 10:
+			recordFile.read(1)
 
-	#	print(c),
+		print(c),
 		t = recordFile.read(1)
-		#print(t)
+		print(t)
 		recordFile.readline(1)
 
 		GameBoard[int(r)][int(c)] = GamePiece(0,int(r),int(c),str(t),None)

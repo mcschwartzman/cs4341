@@ -1,1 +1,1 @@
-GroupX B 2
+GroupX C 12
