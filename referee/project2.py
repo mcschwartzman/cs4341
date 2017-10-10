@@ -77,7 +77,7 @@ def playGame():
 		if os.path.isfile('./firstturn.txt') == True:
 			isMyTurn()
 		else:
-			
+
 			f = open("move_file","w")
 
 			f.write("GroupX" +" "+ "F" + " " + "7")
@@ -90,8 +90,9 @@ def playGame():
 
 			
 			recordFile.write("5" + " " + "7" + " " + "Y" + "\n")
-			open('./firstturn.txt', 'w+')
-	
+			a=open('./firstturn.txt', 'w+')
+			a.close()
+			time.sleep(0.2)
 	
 
 def isMyTurn():
