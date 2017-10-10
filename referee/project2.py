@@ -2,7 +2,7 @@
 
 import os
 
-		
+import time		
 
 class GamePiece:
     def __init__(self,value,row, column, types,parent):
@@ -74,7 +74,7 @@ def playGame():
 		recordFile = open('./history.txt', 'a')
 
 
-		if os.path.getsize('./move_file') != 0:
+		if os.path.isfile('./firstturn.txt') == True:
 			isMyTurn()
 		else:
 			
@@ -90,7 +90,8 @@ def playGame():
 
 			
 			recordFile.write("5" + " " + "7" + " " + "Y" + "\n")
-			
+			open('./firstturn.txt', 'w+')
+	
 	
 
 def isMyTurn():
@@ -98,7 +99,7 @@ def isMyTurn():
 	
 	global GameBoard
 	global matrix
-	f = open("move_file")
+	f = open("move_file", "r")
 	recordFile = open("history.txt", "r")
 
 	i=f.read(1)
@@ -157,6 +158,7 @@ def isMyTurn():
 			stop = 2
 			break
 		recordFile.read(1)
+		r.upper()
 		print(r),
 		c = recordFile.read(2)
 		if int(c) >= 10:
@@ -440,14 +442,14 @@ def printItOut():
 		row = "N"
 	if row == 14:
 		row = "O"
-	
+	row.upper()
 	print(row,column)
 
 	
 	recordFile.close()
 	f.truncate()
-	f.write("GroupX" +" "+ str(row) + " " + str(column))
-	
+	f.write("GroupX" +" "+ str(row) + " " + str(column))		
+
 def findMinimax():
 	global bestList
 	global opponentMoves
@@ -526,6 +528,7 @@ def main():
 	global last
 	global opponentMoves
 	playGame()
+
 
 
 if __name__ == "__main__":
