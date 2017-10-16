@@ -248,6 +248,8 @@ def General_Search(problem, search):
 			for g in expanding:
 				newPath = path('G')
 				for r in openNodes[0].pathQ:
+
+#testing
 					
 					newPath.add_node(r)
 				for i in newPath.pathQ:
